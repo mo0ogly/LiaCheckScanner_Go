@@ -1,0 +1,21 @@
+{
+  "app_name": "LiaCheckScanner",
+  "version": "1.0.0",
+  "owner": "LIA - mo0ogly@proton.me",
+  "theme": "dark",
+  "language": "fr",
+  "log_level": "INFO",
+  "max_log_size": 10,
+  "log_backups": 5,
+  "database": {
+    "repo_url": "https://github.com/MDMCK10/internet-scanners",
+    "local_path": "/home/fpizzi/confluence_vscode/internet-scanners",
+    "results_dir": "./results",
+    "logs_dir": "./logs",
+    "api_key": "",
+    "enable_api": false,
+    "api_throttle": 1,
+    "auto_update": false,
+    "update_interval": 24
+  }
+}

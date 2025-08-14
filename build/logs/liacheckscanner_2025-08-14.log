@@ -1,0 +1,475 @@
+{"timestamp":"2025-08-14T09:11:01.949403347+02:00","level":"INFO","component":"Main","message":"🚀 Démarrage de LiaCheckScanner v1.0.0"}
+{"timestamp":"2025-08-14T09:11:01.949690297+02:00","level":"INFO","component":"Main","message":"👨‍💻 Owner: LIA - mo0ogly@proton.me"}
+{"timestamp":"2025-08-14T09:11:01.9504943+02:00","level":"INFO","component":"Main","message":"✅ Configuration chargée avec succès"}
+{"timestamp":"2025-08-14T09:11:01.989508859+02:00","level":"INFO","component":"GUI","message":"📄 Pagination mise à jour: page 1/1 (0 éléments)"}
+{"timestamp":"2025-08-14T09:11:02.026348166+02:00","level":"INFO","component":"GUI","message":"🚀 Lancement de l'interface graphique"}
+{"timestamp":"2025-08-14T09:11:02.026500272+02:00","level":"INFO","component":"GUI","message":"📂 Chargement des données depuis: results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T09:11:02.059042134+02:00","level":"INFO","component":"GUI","message":"✅ 12064 enregistrements chargés depuis results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T10:11:41.725959655+02:00","level":"INFO","component":"Main","message":"👋 LiaCheckScanner fermé avec succès"}
+{"timestamp":"2025-08-14T10:12:22.929064647+02:00","level":"INFO","component":"Main","message":"🚀 Démarrage de LiaCheckScanner v1.0.0"}
+{"timestamp":"2025-08-14T10:12:22.929281665+02:00","level":"INFO","component":"Main","message":"👨‍💻 Owner: LIA - mo0ogly@proton.me"}
+{"timestamp":"2025-08-14T10:12:22.929496219+02:00","level":"INFO","component":"Main","message":"✅ Configuration chargée avec succès"}
+{"timestamp":"2025-08-14T10:12:22.96386076+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/1 (0 records)"}
+{"timestamp":"2025-08-14T10:12:23.009034797+02:00","level":"INFO","component":"GUI","message":"Filtering logs by level: All"}
+{"timestamp":"2025-08-14T10:12:23.051174135+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T10:12:23.111430937+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T10:12:23.112131696+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T10:12:34.401226512+02:00","level":"INFO","component":"GUI","message":"🔄 Refreshing data..."}
+{"timestamp":"2025-08-14T10:12:34.401430917+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T10:12:34.442191481+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T10:12:34.444352907+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T10:12:34.454359262+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T10:12:34.459220688+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records displayed"}
+{"timestamp":"2025-08-14T10:12:37.001988839+02:00","level":"INFO","component":"GUI","message":"🔄 Refreshing data..."}
+{"timestamp":"2025-08-14T10:12:37.002184126+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T10:12:37.03906463+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T10:12:37.041095251+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T10:12:37.051039759+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T10:12:37.05750887+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records displayed"}
+{"timestamp":"2025-08-14T10:12:37.268818533+02:00","level":"INFO","component":"GUI","message":"🔄 Refreshing data..."}
+{"timestamp":"2025-08-14T10:12:37.269005064+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T10:12:37.298065265+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T10:12:37.300612327+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T10:12:37.307032846+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T10:12:37.311955257+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records displayed"}
+{"timestamp":"2025-08-14T10:12:48.352831052+02:00","level":"INFO","component":"Main","message":"👋 LiaCheckScanner fermé avec succès"}
+{"timestamp":"2025-08-14T10:52:47.093853343+02:00","level":"INFO","component":"Main","message":"🚀 Démarrage de LiaCheckScanner v1.0.0"}
+{"timestamp":"2025-08-14T10:52:47.095764278+02:00","level":"INFO","component":"Main","message":"👨‍💻 Owner: LIA - mo0ogly@proton.me"}
+{"timestamp":"2025-08-14T10:52:47.097999934+02:00","level":"INFO","component":"Main","message":"✅ Configuration chargée avec succès"}
+{"timestamp":"2025-08-14T10:52:47.119173999+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/1 (0 records)"}
+{"timestamp":"2025-08-14T10:52:47.161679597+02:00","level":"INFO","component":"GUI","message":"Filtering logs by level: All"}
+{"timestamp":"2025-08-14T10:52:47.195579964+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T10:52:47.25374416+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T10:52:47.254600782+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T10:53:04.662805219+02:00","level":"INFO","component":"GUI","message":"🔄 Refreshing data..."}
+{"timestamp":"2025-08-14T10:53:04.663022257+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T10:53:04.710014816+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T10:53:04.712309843+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T10:53:04.718215564+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T10:53:04.721416386+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records displayed"}
+{"timestamp":"2025-08-14T10:53:05.979233812+02:00","level":"INFO","component":"GUI","message":"🔄 Refreshing data..."}
+{"timestamp":"2025-08-14T10:53:05.979443056+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T10:53:06.012253724+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T10:53:06.014595068+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T10:53:06.023495503+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T10:53:06.026915407+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records displayed"}
+{"timestamp":"2025-08-14T10:53:23.692273675+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records exported to results/liacheckscanner_export_2025-08-14_10-53-23.csv"}
+{"timestamp":"2025-08-14T11:07:57.743496947+02:00","level":"INFO","component":"Main","message":"👋 LiaCheckScanner fermé avec succès"}
+{"timestamp":"2025-08-14T13:04:50.580566609+02:00","level":"INFO","component":"Main","message":"🚀 Démarrage de LiaCheckScanner v1.0.0"}
+{"timestamp":"2025-08-14T13:04:50.581815168+02:00","level":"INFO","component":"Main","message":"👨‍💻 Owner: LIA - mo0ogly@proton.me"}
+{"timestamp":"2025-08-14T13:04:50.582294329+02:00","level":"INFO","component":"Main","message":"✅ Configuration chargée avec succès"}
+{"timestamp":"2025-08-14T13:04:50.633573312+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/1 (0 records)"}
+{"timestamp":"2025-08-14T13:04:50.667148257+02:00","level":"INFO","component":"GUI","message":"Filtering logs by level: All"}
+{"timestamp":"2025-08-14T13:04:50.704828967+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T13:04:50.705817567+02:00","level":"WARNING","component":"GUI","message":"No CSV found or load failed; no data loaded"}
+{"timestamp":"2025-08-14T13:05:19.571415966+02:00","level":"INFO","component":"GUI","message":"🔄 Refreshing data..."}
+{"timestamp":"2025-08-14T13:05:19.571659755+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T13:05:19.571789579+02:00","level":"WARNING","component":"GUI","message":"No CSV found or load failed; no data loaded"}
+{"timestamp":"2025-08-14T13:05:19.572283939+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/1 (0 records)"}
+{"timestamp":"2025-08-14T13:05:19.57390043+02:00","level":"INFO","component":"GUI","message":"✅ 0 records displayed"}
+{"timestamp":"2025-08-14T13:14:31.95870811+02:00","level":"INFO","component":"Main","message":"👋 LiaCheckScanner fermé avec succès"}
+{"timestamp":"2025-08-14T13:14:33.814455369+02:00","level":"INFO","component":"Main","message":"🚀 Démarrage de LiaCheckScanner v1.0.0"}
+{"timestamp":"2025-08-14T13:14:33.814712502+02:00","level":"INFO","component":"Main","message":"👨‍💻 Owner: LIA - mo0ogly@proton.me"}
+{"timestamp":"2025-08-14T13:14:33.815217022+02:00","level":"INFO","component":"Main","message":"✅ Configuration chargée avec succès"}
+{"timestamp":"2025-08-14T13:14:33.841278492+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/1 (0 records)"}
+{"timestamp":"2025-08-14T13:14:33.879717528+02:00","level":"INFO","component":"GUI","message":"Filtering logs by level: All"}
+{"timestamp":"2025-08-14T13:14:33.904353606+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T13:14:33.90456301+02:00","level":"WARNING","component":"GUI","message":"CSV load error for results/2025-08-13_18-08-33_liacheckscanner.csv: record on line 24: wrong number of fields"}
+{"timestamp":"2025-08-14T13:14:33.904607384+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/liacheckscanner_export_2025-08-14_10-53-23.csv"}
+{"timestamp":"2025-08-14T13:14:33.945974268+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/liacheckscanner_export_2025-08-14_10-53-23.csv"}
+{"timestamp":"2025-08-14T13:14:33.946345918+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T13:16:41.722164663+02:00","level":"INFO","component":"GUI","message":"🔄 Refreshing data..."}
+{"timestamp":"2025-08-14T13:16:41.722395567+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T13:16:41.722525562+02:00","level":"WARNING","component":"GUI","message":"CSV load error for results/2025-08-13_18-08-33_liacheckscanner.csv: record on line 24: wrong number of fields"}
+{"timestamp":"2025-08-14T13:16:41.722578752+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/liacheckscanner_export_2025-08-14_10-53-23.csv"}
+{"timestamp":"2025-08-14T13:16:41.761314106+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/liacheckscanner_export_2025-08-14_10-53-23.csv"}
+{"timestamp":"2025-08-14T13:16:41.766772124+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T13:16:41.778271478+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T13:16:41.782449278+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records displayed"}
+{"timestamp":"2025-08-14T13:19:14.458320354+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T13:19:17.773033736+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 2/121 (12064 records)"}
+{"timestamp":"2025-08-14T13:26:39.700985579+02:00","level":"INFO","component":"Main","message":"👋 LiaCheckScanner fermé avec succès"}
+{"timestamp":"2025-08-14T13:26:42.87493068+02:00","level":"INFO","component":"Main","message":"🚀 Démarrage de LiaCheckScanner v1.0.0"}
+{"timestamp":"2025-08-14T13:26:42.87507947+02:00","level":"INFO","component":"Main","message":"👨‍💻 Owner: LIA - mo0ogly@proton.me"}
+{"timestamp":"2025-08-14T13:26:42.876444368+02:00","level":"INFO","component":"Main","message":"✅ Configuration chargée avec succès"}
+{"timestamp":"2025-08-14T13:26:42.918532459+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/1 (0 records)"}
+{"timestamp":"2025-08-14T13:26:42.950396606+02:00","level":"INFO","component":"GUI","message":"Filtering logs by level: All"}
+{"timestamp":"2025-08-14T13:26:42.974384044+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T13:26:42.974968223+02:00","level":"WARNING","component":"GUI","message":"CSV load error for results/2025-08-13_18-08-33_liacheckscanner.csv: record on line 24: wrong number of fields"}
+{"timestamp":"2025-08-14T13:26:42.975026152+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/liacheckscanner_export_2025-08-14_10-53-23.csv"}
+{"timestamp":"2025-08-14T13:26:43.021836558+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/liacheckscanner_export_2025-08-14_10-53-23.csv"}
+{"timestamp":"2025-08-14T13:26:43.022448078+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T13:29:38.058892427+02:00","level":"INFO","component":"GUI","message":"🔄 Refreshing data..."}
+{"timestamp":"2025-08-14T13:29:38.059839559+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T13:29:38.060285598+02:00","level":"WARNING","component":"GUI","message":"CSV load error for results/2025-08-13_18-08-33_liacheckscanner.csv: record on line 24: wrong number of fields"}
+{"timestamp":"2025-08-14T13:29:38.060340341+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/liacheckscanner_export_2025-08-14_10-53-23.csv"}
+{"timestamp":"2025-08-14T13:29:38.106373745+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/liacheckscanner_export_2025-08-14_10-53-23.csv"}
+{"timestamp":"2025-08-14T13:29:38.108982333+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T13:29:38.114771284+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T13:29:38.119028393+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records displayed"}
+{"timestamp":"2025-08-14T13:30:22.00775003+02:00","level":"INFO","component":"GUI","message":"Logs exported to: logs/system_logs_2025-08-14_13-30-22.txt"}
+{"timestamp":"2025-08-14T13:34:18.639953961+02:00","level":"INFO","component":"Main","message":"👋 LiaCheckScanner fermé avec succès"}
+{"timestamp":"2025-08-14T13:34:46.985928998+02:00","level":"INFO","component":"Main","message":"🚀 Démarrage de LiaCheckScanner v1.0.0"}
+{"timestamp":"2025-08-14T13:34:46.987348479+02:00","level":"INFO","component":"Main","message":"👨‍💻 Owner: LIA - mo0ogly@proton.me"}
+{"timestamp":"2025-08-14T13:34:46.989202296+02:00","level":"INFO","component":"Main","message":"✅ Configuration chargée avec succès"}
+{"timestamp":"2025-08-14T13:34:47.037158137+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/1 (0 records)"}
+{"timestamp":"2025-08-14T13:34:47.06765392+02:00","level":"INFO","component":"GUI","message":"Filtering logs by level: All"}
+{"timestamp":"2025-08-14T13:34:47.095270425+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T13:34:47.096007231+02:00","level":"WARNING","component":"GUI","message":"CSV load error for results/2025-08-13_18-08-33_liacheckscanner.csv: record on line 24: wrong number of fields"}
+{"timestamp":"2025-08-14T13:34:47.096072234+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/liacheckscanner_export_2025-08-14_10-53-23.csv"}
+{"timestamp":"2025-08-14T13:34:47.142026138+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/liacheckscanner_export_2025-08-14_10-53-23.csv"}
+{"timestamp":"2025-08-14T13:34:47.142430158+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T15:17:36.289019129+02:00","level":"INFO","component":"Main","message":"👋 LiaCheckScanner fermé avec succès"}
+{"timestamp":"2025-08-14T15:17:39.505876492+02:00","level":"INFO","component":"Main","message":"🚀 Démarrage de LiaCheckScanner v1.0.0"}
+{"timestamp":"2025-08-14T15:17:39.50601356+02:00","level":"INFO","component":"Main","message":"👨‍💻 Owner: LIA - mo0ogly@proton.me"}
+{"timestamp":"2025-08-14T15:17:39.506311631+02:00","level":"INFO","component":"Main","message":"✅ Configuration chargée avec succès"}
+{"timestamp":"2025-08-14T15:17:39.562063028+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/1 (0 records)"}
+{"timestamp":"2025-08-14T15:17:39.600714694+02:00","level":"INFO","component":"GUI","message":"Filtering logs by level: All"}
+{"timestamp":"2025-08-14T15:17:39.625108547+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/2025-08-13_18-08-33_liacheckscanner.csv"}
+{"timestamp":"2025-08-14T15:17:39.625777606+02:00","level":"WARNING","component":"GUI","message":"CSV load error for results/2025-08-13_18-08-33_liacheckscanner.csv: record on line 24: wrong number of fields"}
+{"timestamp":"2025-08-14T15:17:39.625860171+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/liacheckscanner_export_2025-08-14_10-53-23.csv"}
+{"timestamp":"2025-08-14T15:17:39.682257152+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/liacheckscanner_export_2025-08-14_10-53-23.csv"}
+{"timestamp":"2025-08-14T15:17:39.683242325+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T15:17:50.50947125+02:00","level":"INFO","component":"GUI","message":"🔧 Running full extraction..."}
+{"timestamp":"2025-08-14T15:17:50.509587769+02:00","level":"INFO","component":"Extractor","message":"🚀 Début de l'extraction des données"}
+{"timestamp":"2025-08-14T15:17:50.509617094+02:00","level":"INFO","component":"Extractor","message":"📥 Clonage/mise à jour du repository..."}
+{"timestamp":"2025-08-14T15:17:50.509642402+02:00","level":"INFO","component":"Extractor","message":"🔧 Configuration forcée - Repository: https://github.com/MDMCK10/internet-scanners"}
+{"timestamp":"2025-08-14T15:17:50.509703877+02:00","level":"INFO","component":"Extractor","message":"🔧 Configuration forcée - Local Path: /home/fpizzi/confluence_vscode/internet-scanners"}
+{"timestamp":"2025-08-14T15:17:50.509749363+02:00","level":"INFO","component":"Extractor","message":"Repository local trouvé, mise à jour..."}
+{"timestamp":"2025-08-14T15:17:50.850184623+02:00","level":"INFO","component":"Extractor","message":"✅ Repository synchronisé"}
+{"timestamp":"2025-08-14T15:17:50.850340657+02:00","level":"INFO","component":"Extractor","message":"🔍 Parsing des fichiers pour extraire les IPs..."}
+{"timestamp":"2025-08-14T15:17:50.8503746+02:00","level":"INFO","component":"Extractor","message":"📁 Parsing du répertoire: /home/fpizzi/confluence_vscode/internet-scanners"}
+{"timestamp":"2025-08-14T15:17:50.85039561+02:00","level":"INFO","component":"Extractor","message":"🔍 Parsing des fichiers pour extraire les IPs..."}
+{"timestamp":"2025-08-14T15:17:50.850485629+02:00","level":"INFO","component":"Extractor","message":"📁 Parsing du répertoire: /home/fpizzi/confluence_vscode/internet-scanners"}
+{"timestamp":"2025-08-14T15:17:50.850896703+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: a10networks.nft"}
+{"timestamp":"2025-08-14T15:17:50.851955805+02:00","level":"INFO","component":"Extractor","message":"✅ a10networks.nft: 11 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.852000599+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: academyforinternetresearch.nft"}
+{"timestamp":"2025-08-14T15:17:50.854329922+02:00","level":"INFO","component":"Extractor","message":"✅ academyforinternetresearch.nft: 34 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.854409241+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: adscore.nft"}
+{"timestamp":"2025-08-14T15:17:50.85638617+02:00","level":"INFO","component":"Extractor","message":"✅ adscore.nft: 57 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.856475248+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: alphastrike.nft"}
+{"timestamp":"2025-08-14T15:17:50.856807934+02:00","level":"INFO","component":"Extractor","message":"✅ alphastrike.nft: 3 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.856869059+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: binaryedge.nft"}
+{"timestamp":"2025-08-14T15:17:50.871911328+02:00","level":"INFO","component":"Extractor","message":"✅ binaryedge.nft: 3737 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.872008851+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: bitsight.nft"}
+{"timestamp":"2025-08-14T15:17:50.872562223+02:00","level":"INFO","component":"Extractor","message":"✅ bitsight.nft: 32 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.872599493+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: bufferoverrun.nft"}
+{"timestamp":"2025-08-14T15:17:50.872838833+02:00","level":"INFO","component":"Extractor","message":"✅ bufferoverrun.nft: 51 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.872861415+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: censys.nft"}
+{"timestamp":"2025-08-14T15:17:50.873015285+02:00","level":"INFO","component":"Extractor","message":"✅ censys.nft: 13 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.873394558+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: criminalip.nft"}
+{"timestamp":"2025-08-14T15:17:50.873581941+02:00","level":"INFO","component":"Extractor","message":"✅ criminalip.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.87363448+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: crowdstrikefalconsurface.nft"}
+{"timestamp":"2025-08-14T15:17:50.87381003+02:00","level":"INFO","component":"Extractor","message":"✅ crowdstrikefalconsurface.nft: 4 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.873862589+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: cybcube.nft"}
+{"timestamp":"2025-08-14T15:17:50.873997753+02:00","level":"INFO","component":"Extractor","message":"✅ cybcube.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.874032138+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: cybergreen.nft"}
+{"timestamp":"2025-08-14T15:17:50.874156742+02:00","level":"INFO","component":"Extractor","message":"✅ cybergreen.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.874189795+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: cyberresilience.nft"}
+{"timestamp":"2025-08-14T15:17:50.874375173+02:00","level":"INFO","component":"Extractor","message":"✅ cyberresilience.nft: 15 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.874426069+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: cypex.nft"}
+{"timestamp":"2025-08-14T15:17:50.874648317+02:00","level":"INFO","component":"Extractor","message":"✅ cypex.nft: 15 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.874684104+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: dataplane.nft"}
+{"timestamp":"2025-08-14T15:17:50.874845558+02:00","level":"INFO","component":"Extractor","message":"✅ dataplane.nft: 4 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.874887126+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: deepfield.nft"}
+{"timestamp":"2025-08-14T15:17:50.875046266+02:00","level":"INFO","component":"Extractor","message":"✅ deepfield.nft: 2 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.875080911+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: driftnet.nft"}
+{"timestamp":"2025-08-14T15:17:50.875384853+02:00","level":"INFO","component":"Extractor","message":"✅ driftnet.nft: 44 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.87543646+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: eset.nft"}
+{"timestamp":"2025-08-14T15:17:50.875590339+02:00","level":"INFO","component":"Extractor","message":"✅ eset.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.875624383+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: fofa.nft"}
+{"timestamp":"2025-08-14T15:17:50.876482848+02:00","level":"INFO","component":"Extractor","message":"✅ fofa.nft: 166 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.87661651+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: groupib.nft"}
+{"timestamp":"2025-08-14T15:17:50.876900604+02:00","level":"INFO","component":"Extractor","message":"✅ groupib.nft: 4 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.876969374+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: hadrian.nft"}
+{"timestamp":"2025-08-14T15:17:50.877372783+02:00","level":"INFO","component":"Extractor","message":"✅ hadrian.nft: 31 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.877433427+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: hunter.nft"}
+{"timestamp":"2025-08-14T15:17:50.878663782+02:00","level":"INFO","component":"Extractor","message":"✅ hunter.nft: 520 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.878772095+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: internetmetrics.nft"}
+{"timestamp":"2025-08-14T15:17:50.879018809+02:00","level":"INFO","component":"Extractor","message":"✅ internetmetrics.nft: 2 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.879090334+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: internetresearchproject.nft"}
+{"timestamp":"2025-08-14T15:17:50.87938575+02:00","level":"INFO","component":"Extractor","message":"✅ internetresearchproject.nft: 15 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.879437427+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: internettl.nft"}
+{"timestamp":"2025-08-14T15:17:50.879650598+02:00","level":"INFO","component":"Extractor","message":"✅ internettl.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.879738423+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: intrinsec.nft"}
+{"timestamp":"2025-08-14T15:17:50.87996536+02:00","level":"INFO","component":"Extractor","message":"✅ intrinsec.nft: 5 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.880018129+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: ipinfo.nft"}
+{"timestamp":"2025-08-14T15:17:50.884527393+02:00","level":"INFO","component":"Extractor","message":"✅ ipinfo.nft: 1005 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.884668048+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: ipip.nft"}
+{"timestamp":"2025-08-14T15:17:50.885020481+02:00","level":"INFO","component":"Extractor","message":"✅ ipip.nft: 48 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.88505763+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: ki3.nft"}
+{"timestamp":"2025-08-14T15:17:50.885253529+02:00","level":"INFO","component":"Extractor","message":"✅ ki3.nft: 8 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.885283966+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: knoq.nft"}
+{"timestamp":"2025-08-14T15:17:50.885433207+02:00","level":"INFO","component":"Extractor","message":"✅ knoq.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.885462813+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: leakix.nft"}
+{"timestamp":"2025-08-14T15:17:50.886543576+02:00","level":"INFO","component":"Extractor","message":"✅ leakix.nft: 188 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.886602276+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: mandiantasm.nft"}
+{"timestamp":"2025-08-14T15:17:50.887089082+02:00","level":"INFO","component":"Extractor","message":"✅ mandiantasm.nft: 104 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.887129378+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: modat.nft"}
+{"timestamp":"2025-08-14T15:17:50.887368568+02:00","level":"INFO","component":"Extractor","message":"✅ modat.nft: 28 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.887408483+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: netlas.nft"}
+{"timestamp":"2025-08-14T15:17:50.887674003+02:00","level":"INFO","component":"Extractor","message":"✅ netlas.nft: 30 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.887729197+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: netscout.nft"}
+{"timestamp":"2025-08-14T15:17:50.887887745+02:00","level":"INFO","component":"Extractor","message":"✅ netscout.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.887925426+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: netsecscan.nft"}
+{"timestamp":"2025-08-14T15:17:50.888136934+02:00","level":"INFO","component":"Extractor","message":"✅ netsecscan.nft: 16 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.888174935+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: odin.nft"}
+{"timestamp":"2025-08-14T15:17:50.889202088+02:00","level":"INFO","component":"Extractor","message":"✅ odin.nft: 241 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.889236051+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: onlyscans.nft"}
+{"timestamp":"2025-08-14T15:17:50.889664978+02:00","level":"INFO","component":"Extractor","message":"✅ onlyscans.nft: 91 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.889694354+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: onyphe.nft"}
+{"timestamp":"2025-08-14T15:17:50.889980973+02:00","level":"INFO","component":"Extractor","message":"✅ onyphe.nft: 25 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.890067876+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: other.nft"}
+{"timestamp":"2025-08-14T15:17:50.890382288+02:00","level":"INFO","component":"Extractor","message":"✅ other.nft: 14 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.8904418+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: paloaltonetworks.nft"}
+{"timestamp":"2025-08-14T15:17:50.890664589+02:00","level":"INFO","component":"Extractor","message":"✅ paloaltonetworks.nft: 8 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.890704394+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: pocnroll.nft"}
+{"timestamp":"2025-08-14T15:17:50.890861279+02:00","level":"INFO","component":"Extractor","message":"✅ pocnroll.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.890898088+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: quake.nft"}
+{"timestamp":"2025-08-14T15:17:50.892881309+02:00","level":"INFO","component":"Extractor","message":"✅ quake.nft: 515 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.892972421+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: rapid7.nft"}
+{"timestamp":"2025-08-14T15:17:50.893222722+02:00","level":"INFO","component":"Extractor","message":"✅ rapid7.nft: 7 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.893264791+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: recyber.nft"}
+{"timestamp":"2025-08-14T15:17:50.893460098+02:00","level":"INFO","component":"Extractor","message":"✅ recyber.nft: 11 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.893499572+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: researchscanner.nft"}
+{"timestamp":"2025-08-14T15:17:50.893739033+02:00","level":"INFO","component":"Extractor","message":"✅ researchscanner.nft: 23 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.893855442+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: scanopticon.nft"}
+{"timestamp":"2025-08-14T15:17:50.894004863+02:00","level":"INFO","component":"Extractor","message":"✅ scanopticon.nft: 2 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.894042684+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: securityresearch.nft"}
+{"timestamp":"2025-08-14T15:17:50.894180313+02:00","level":"INFO","component":"Extractor","message":"✅ securityresearch.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.89421556+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: shadowforce.nft"}
+{"timestamp":"2025-08-14T15:17:50.894363007+02:00","level":"INFO","component":"Extractor","message":"✅ shadowforce.nft: 3 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.894398163+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: shadowserver.nft"}
+{"timestamp":"2025-08-14T15:17:50.894592759+02:00","level":"INFO","component":"Extractor","message":"✅ shadowserver.nft: 13 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.894630951+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: shodan.nft"}
+{"timestamp":"2025-08-14T15:17:50.895251779+02:00","level":"INFO","component":"Extractor","message":"✅ shodan.nft: 107 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.895310129+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: strechoid.nft"}
+{"timestamp":"2025-08-14T15:17:50.908464036+02:00","level":"INFO","component":"Extractor","message":"✅ strechoid.nft: 3968 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.908776033+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: tenableasm.nft"}
+{"timestamp":"2025-08-14T15:17:50.912180929+02:00","level":"INFO","component":"Extractor","message":"✅ tenableasm.nft: 566 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.912321804+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: universities.nft"}
+{"timestamp":"2025-08-14T15:17:50.913981767+02:00","level":"INFO","component":"Extractor","message":"✅ universities.nft: 216 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.914088427+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: xmco.nft"}
+{"timestamp":"2025-08-14T15:17:50.915533095+02:00","level":"INFO","component":"Extractor","message":"✅ xmco.nft: 39 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.915637271+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: zoomeye.nft"}
+{"timestamp":"2025-08-14T15:17:50.915953777+02:00","level":"INFO","component":"Extractor","message":"✅ zoomeye.nft: 14 IPs extraites"}
+{"timestamp":"2025-08-14T15:17:50.91878864+02:00","level":"INFO","component":"Extractor","message":"✅ 12064 IPs uniques extraites au total"}
+{"timestamp":"2025-08-14T15:17:50.91886864+02:00","level":"INFO","component":"Extractor","message":"✅ 12064 IPs uniques extraites au total"}
+{"timestamp":"2025-08-14T15:17:50.918885061+02:00","level":"INFO","component":"Extractor","message":"🌍 Enrichissement des données..."}
+{"timestamp":"2025-08-14T15:17:50.918896353+02:00","level":"INFO","component":"Extractor","message":"🌍 Enrichissement des données..."}
+{"timestamp":"2025-08-14T15:18:55.91589778+02:00","level":"INFO","component":"Extractor","message":"📊 Sauvegarde en CSV..."}
+{"timestamp":"2025-08-14T15:18:55.951188584+02:00","level":"INFO","component":"Extractor","message":"✅ Données sauvegardées: results/page_enriched_2025-08-14_15-18-55.csv"}
+{"timestamp":"2025-08-14T15:18:55.951269216+02:00","level":"INFO","component":"GUI","message":"✅ Page RDAP associated and saved: page_enriched_2025-08-14_15-18-55.csv"}
+{"timestamp":"2025-08-14T15:24:07.51956573+02:00","level":"INFO","component":"Main","message":"👋 LiaCheckScanner fermé avec succès"}
+{"timestamp":"2025-08-14T15:28:18.662523058+02:00","level":"INFO","component":"Main","message":"🚀 Démarrage de LiaCheckScanner v1.0.0"}
+{"timestamp":"2025-08-14T15:28:18.663306302+02:00","level":"INFO","component":"Main","message":"👨‍💻 Owner: LIA - mo0ogly@proton.me"}
+{"timestamp":"2025-08-14T15:28:18.663899227+02:00","level":"INFO","component":"Main","message":"✅ Configuration chargée avec succès"}
+{"timestamp":"2025-08-14T15:28:18.720647549+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/1 (0 records)"}
+{"timestamp":"2025-08-14T15:28:18.834946223+02:00","level":"INFO","component":"GUI","message":"Filtering logs by level: All"}
+{"timestamp":"2025-08-14T15:28:18.991962291+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/page_enriched_2025-08-14_15-18-55.csv"}
+{"timestamp":"2025-08-14T15:28:19.341944663+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/page_enriched_2025-08-14_15-18-55.csv"}
+{"timestamp":"2025-08-14T15:28:19.344876529+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T15:28:30.773447766+02:00","level":"INFO","component":"Extractor","message":"📊 Sauvegarde en CSV..."}
+{"timestamp":"2025-08-14T15:28:30.904751842+02:00","level":"INFO","component":"Extractor","message":"✅ Données sauvegardées: results/page_enriched_2025-08-14_15-28-30.csv"}
+{"timestamp":"2025-08-14T15:28:30.905068498+02:00","level":"INFO","component":"GUI","message":"✅ Page RDAP associated and saved: page_enriched_2025-08-14_15-28-30.csv"}
+{"timestamp":"2025-08-14T15:28:36.790706321+02:00","level":"INFO","component":"Main","message":"👋 LiaCheckScanner fermé avec succès"}
+{"timestamp":"2025-08-14T16:04:08.222019083+02:00","level":"INFO","component":"Main","message":"🚀 Démarrage de LiaCheckScanner v1.0.0"}
+{"timestamp":"2025-08-14T16:04:08.222599926+02:00","level":"INFO","component":"Main","message":"👨‍💻 Owner: LIA - mo0ogly@proton.me"}
+{"timestamp":"2025-08-14T16:04:08.22299031+02:00","level":"INFO","component":"Main","message":"✅ Configuration chargée avec succès"}
+{"timestamp":"2025-08-14T16:04:08.254407687+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/1 (0 records)"}
+{"timestamp":"2025-08-14T16:04:08.290426279+02:00","level":"INFO","component":"GUI","message":"Filtering logs by level: All"}
+{"timestamp":"2025-08-14T16:04:08.312329006+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/page_enriched_2025-08-14_15-28-30.csv"}
+{"timestamp":"2025-08-14T16:04:08.3681854+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/page_enriched_2025-08-14_15-28-30.csv"}
+{"timestamp":"2025-08-14T16:04:08.368544796+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T16:04:16.21325679+02:00","level":"INFO","component":"Extractor","message":"🚀 Début de l'extraction des données"}
+{"timestamp":"2025-08-14T16:04:16.213375493+02:00","level":"INFO","component":"Extractor","message":"📥 Clonage/mise à jour du repository..."}
+{"timestamp":"2025-08-14T16:04:16.213413605+02:00","level":"INFO","component":"Extractor","message":"🔧 Configuration forcée - Repository: https://github.com/MDMCK10/internet-scanners"}
+{"timestamp":"2025-08-14T16:04:16.21344824+02:00","level":"INFO","component":"Extractor","message":"🔧 Configuration forcée - Local Path: /home/fpizzi/confluence_vscode/internet-scanners"}
+{"timestamp":"2025-08-14T16:04:16.213497913+02:00","level":"INFO","component":"Extractor","message":"Repository local trouvé, mise à jour..."}
+{"timestamp":"2025-08-14T16:04:16.553344947+02:00","level":"INFO","component":"Extractor","message":"✅ Repository synchronisé"}
+{"timestamp":"2025-08-14T16:04:16.553422142+02:00","level":"INFO","component":"Extractor","message":"🔍 Parsing des fichiers pour extraire les IPs..."}
+{"timestamp":"2025-08-14T16:04:16.553445546+02:00","level":"INFO","component":"Extractor","message":"📁 Parsing du répertoire: /home/fpizzi/confluence_vscode/internet-scanners"}
+{"timestamp":"2025-08-14T16:04:16.553464402+02:00","level":"INFO","component":"Extractor","message":"🔍 Parsing des fichiers pour extraire les IPs..."}
+{"timestamp":"2025-08-14T16:04:16.553494017+02:00","level":"INFO","component":"Extractor","message":"📁 Parsing du répertoire: /home/fpizzi/confluence_vscode/internet-scanners"}
+{"timestamp":"2025-08-14T16:04:16.553839076+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: a10networks.nft"}
+{"timestamp":"2025-08-14T16:04:16.554213611+02:00","level":"INFO","component":"Extractor","message":"✅ a10networks.nft: 11 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.554268023+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: academyforinternetresearch.nft"}
+{"timestamp":"2025-08-14T16:04:16.554745552+02:00","level":"INFO","component":"Extractor","message":"✅ academyforinternetresearch.nft: 34 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.554799573+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: adscore.nft"}
+{"timestamp":"2025-08-14T16:04:16.555268916+02:00","level":"INFO","component":"Extractor","message":"✅ adscore.nft: 57 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.555322738+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: alphastrike.nft"}
+{"timestamp":"2025-08-14T16:04:16.555613344+02:00","level":"INFO","component":"Extractor","message":"✅ alphastrike.nft: 3 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.555668268+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: binaryedge.nft"}
+{"timestamp":"2025-08-14T16:04:16.565356915+02:00","level":"INFO","component":"Extractor","message":"✅ binaryedge.nft: 3737 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.565441023+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: bitsight.nft"}
+{"timestamp":"2025-08-14T16:04:16.565697827+02:00","level":"INFO","component":"Extractor","message":"✅ bitsight.nft: 32 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.565729697+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: bufferoverrun.nft"}
+{"timestamp":"2025-08-14T16:04:16.566054237+02:00","level":"INFO","component":"Extractor","message":"✅ bufferoverrun.nft: 51 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.566083192+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: censys.nft"}
+{"timestamp":"2025-08-14T16:04:16.566262529+02:00","level":"INFO","component":"Extractor","message":"✅ censys.nft: 13 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.566917641+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: criminalip.nft"}
+{"timestamp":"2025-08-14T16:04:16.567185876+02:00","level":"INFO","component":"Extractor","message":"✅ criminalip.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.567224849+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: crowdstrikefalconsurface.nft"}
+{"timestamp":"2025-08-14T16:04:16.567435305+02:00","level":"INFO","component":"Extractor","message":"✅ crowdstrikefalconsurface.nft: 4 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.567459731+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: cybcube.nft"}
+{"timestamp":"2025-08-14T16:04:16.567611126+02:00","level":"INFO","component":"Extractor","message":"✅ cybcube.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.567625443+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: cybergreen.nft"}
+{"timestamp":"2025-08-14T16:04:16.567749927+02:00","level":"INFO","component":"Extractor","message":"✅ cybergreen.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.567763573+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: cyberresilience.nft"}
+{"timestamp":"2025-08-14T16:04:16.56792133+02:00","level":"INFO","component":"Extractor","message":"✅ cyberresilience.nft: 15 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.567934755+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: cypex.nft"}
+{"timestamp":"2025-08-14T16:04:16.568099385+02:00","level":"INFO","component":"Extractor","message":"✅ cypex.nft: 15 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.568113211+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: dataplane.nft"}
+{"timestamp":"2025-08-14T16:04:16.568259266+02:00","level":"INFO","component":"Extractor","message":"✅ dataplane.nft: 4 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.568272591+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: deepfield.nft"}
+{"timestamp":"2025-08-14T16:04:16.56844768+02:00","level":"INFO","component":"Extractor","message":"✅ deepfield.nft: 2 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.568460524+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: driftnet.nft"}
+{"timestamp":"2025-08-14T16:04:16.568606409+02:00","level":"INFO","component":"Extractor","message":"✅ driftnet.nft: 44 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.568619754+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: eset.nft"}
+{"timestamp":"2025-08-14T16:04:16.568700225+02:00","level":"INFO","component":"Extractor","message":"✅ eset.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.56871367+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: fofa.nft"}
+{"timestamp":"2025-08-14T16:04:16.569018624+02:00","level":"INFO","component":"Extractor","message":"✅ fofa.nft: 166 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.56904834+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: groupib.nft"}
+{"timestamp":"2025-08-14T16:04:16.569259517+02:00","level":"INFO","component":"Extractor","message":"✅ groupib.nft: 4 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.569280898+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: hadrian.nft"}
+{"timestamp":"2025-08-14T16:04:16.569459844+02:00","level":"INFO","component":"Extractor","message":"✅ hadrian.nft: 31 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.56947348+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: hunter.nft"}
+{"timestamp":"2025-08-14T16:04:16.570894924+02:00","level":"INFO","component":"Extractor","message":"✅ hunter.nft: 520 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.570976007+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: internetmetrics.nft"}
+{"timestamp":"2025-08-14T16:04:16.571234052+02:00","level":"INFO","component":"Extractor","message":"✅ internetmetrics.nft: 2 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.571267455+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: internetresearchproject.nft"}
+{"timestamp":"2025-08-14T16:04:16.571661346+02:00","level":"INFO","component":"Extractor","message":"✅ internetresearchproject.nft: 15 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.571698746+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: internettl.nft"}
+{"timestamp":"2025-08-14T16:04:16.571856613+02:00","level":"INFO","component":"Extractor","message":"✅ internettl.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.571887291+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: intrinsec.nft"}
+{"timestamp":"2025-08-14T16:04:16.572066037+02:00","level":"INFO","component":"Extractor","message":"✅ intrinsec.nft: 5 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.572098899+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: ipinfo.nft"}
+{"timestamp":"2025-08-14T16:04:16.575945265+02:00","level":"INFO","component":"Extractor","message":"✅ ipinfo.nft: 1005 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.576046115+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: ipip.nft"}
+{"timestamp":"2025-08-14T16:04:16.578003107+02:00","level":"INFO","component":"Extractor","message":"✅ ipip.nft: 48 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.578084941+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: ki3.nft"}
+{"timestamp":"2025-08-14T16:04:16.579696262+02:00","level":"INFO","component":"Extractor","message":"✅ ki3.nft: 8 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.579725848+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: knoq.nft"}
+{"timestamp":"2025-08-14T16:04:16.57992376+02:00","level":"INFO","component":"Extractor","message":"✅ knoq.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.579977692+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: leakix.nft"}
+{"timestamp":"2025-08-14T16:04:16.581068123+02:00","level":"INFO","component":"Extractor","message":"✅ leakix.nft: 188 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.581098771+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: mandiantasm.nft"}
+{"timestamp":"2025-08-14T16:04:16.581876965+02:00","level":"INFO","component":"Extractor","message":"✅ mandiantasm.nft: 104 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.581967625+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: modat.nft"}
+{"timestamp":"2025-08-14T16:04:16.582306703+02:00","level":"INFO","component":"Extractor","message":"✅ modat.nft: 28 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.582364442+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: netlas.nft"}
+{"timestamp":"2025-08-14T16:04:16.582754245+02:00","level":"INFO","component":"Extractor","message":"✅ netlas.nft: 30 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.582813697+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: netscout.nft"}
+{"timestamp":"2025-08-14T16:04:16.583085028+02:00","level":"INFO","component":"Extractor","message":"✅ netscout.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.583137627+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: netsecscan.nft"}
+{"timestamp":"2025-08-14T16:04:16.583435287+02:00","level":"INFO","component":"Extractor","message":"✅ netsecscan.nft: 16 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.58347985+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: odin.nft"}
+{"timestamp":"2025-08-14T16:04:16.584610157+02:00","level":"INFO","component":"Extractor","message":"✅ odin.nft: 241 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.584672845+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: onlyscans.nft"}
+{"timestamp":"2025-08-14T16:04:16.585216147+02:00","level":"INFO","component":"Extractor","message":"✅ onlyscans.nft: 91 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.585266361+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: onyphe.nft"}
+{"timestamp":"2025-08-14T16:04:16.585631939+02:00","level":"INFO","component":"Extractor","message":"✅ onyphe.nft: 25 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.585668688+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: other.nft"}
+{"timestamp":"2025-08-14T16:04:16.585896327+02:00","level":"INFO","component":"Extractor","message":"✅ other.nft: 14 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.585933527+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: paloaltonetworks.nft"}
+{"timestamp":"2025-08-14T16:04:16.586157338+02:00","level":"INFO","component":"Extractor","message":"✅ paloaltonetworks.nft: 8 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.586189759+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: pocnroll.nft"}
+{"timestamp":"2025-08-14T16:04:16.586433708+02:00","level":"INFO","component":"Extractor","message":"✅ pocnroll.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.586465217+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: quake.nft"}
+{"timestamp":"2025-08-14T16:04:16.588664665+02:00","level":"INFO","component":"Extractor","message":"✅ quake.nft: 515 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.588870933+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: rapid7.nft"}
+{"timestamp":"2025-08-14T16:04:16.589321771+02:00","level":"INFO","component":"Extractor","message":"✅ rapid7.nft: 7 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.589458999+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: recyber.nft"}
+{"timestamp":"2025-08-14T16:04:16.590164737+02:00","level":"INFO","component":"Extractor","message":"✅ recyber.nft: 11 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.590239878+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: researchscanner.nft"}
+{"timestamp":"2025-08-14T16:04:16.590665429+02:00","level":"INFO","component":"Extractor","message":"✅ researchscanner.nft: 23 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.59071394+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: scanopticon.nft"}
+{"timestamp":"2025-08-14T16:04:16.591549041+02:00","level":"INFO","component":"Extractor","message":"✅ scanopticon.nft: 2 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.591596681+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: securityresearch.nft"}
+{"timestamp":"2025-08-14T16:04:16.591825231+02:00","level":"INFO","component":"Extractor","message":"✅ securityresearch.nft: 1 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.591867721+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: shadowforce.nft"}
+{"timestamp":"2025-08-14T16:04:16.592108163+02:00","level":"INFO","component":"Extractor","message":"✅ shadowforce.nft: 3 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.592169549+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: shadowserver.nft"}
+{"timestamp":"2025-08-14T16:04:16.592494039+02:00","level":"INFO","component":"Extractor","message":"✅ shadowserver.nft: 13 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.592536208+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: shodan.nft"}
+{"timestamp":"2025-08-14T16:04:16.593376339+02:00","level":"INFO","component":"Extractor","message":"✅ shodan.nft: 107 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.593434729+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: strechoid.nft"}
+{"timestamp":"2025-08-14T16:04:16.603975149+02:00","level":"INFO","component":"Extractor","message":"✅ strechoid.nft: 3968 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.604106687+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: tenableasm.nft"}
+{"timestamp":"2025-08-14T16:04:16.605222456+02:00","level":"INFO","component":"Extractor","message":"✅ tenableasm.nft: 566 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.605301845+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: universities.nft"}
+{"timestamp":"2025-08-14T16:04:16.605998105+02:00","level":"INFO","component":"Extractor","message":"✅ universities.nft: 216 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.606034664+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: xmco.nft"}
+{"timestamp":"2025-08-14T16:04:16.606285355+02:00","level":"INFO","component":"Extractor","message":"✅ xmco.nft: 39 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.606310092+02:00","level":"INFO","component":"Extractor","message":"📄 Traitement du fichier: zoomeye.nft"}
+{"timestamp":"2025-08-14T16:04:16.606484079+02:00","level":"INFO","component":"Extractor","message":"✅ zoomeye.nft: 14 IPs extraites"}
+{"timestamp":"2025-08-14T16:04:16.607725004+02:00","level":"INFO","component":"Extractor","message":"✅ 12064 IPs uniques extraites au total"}
+{"timestamp":"2025-08-14T16:04:16.607798893+02:00","level":"INFO","component":"Extractor","message":"✅ 12064 IPs uniques extraites au total"}
+{"timestamp":"2025-08-14T16:04:16.607812939+02:00","level":"INFO","component":"Extractor","message":"🌍 Enrichissement des données..."}
+{"timestamp":"2025-08-14T16:04:16.607822557+02:00","level":"INFO","component":"Extractor","message":"🌍 Enrichissement des données..."}
+{"timestamp":"2025-08-14T16:35:46.673641802+02:00","level":"INFO","component":"Main","message":"👋 LiaCheckScanner fermé avec succès"}
+{"timestamp":"2025-08-14T16:35:55.519336831+02:00","level":"INFO","component":"Main","message":"🚀 Démarrage de LiaCheckScanner v1.0.0"}
+{"timestamp":"2025-08-14T16:35:55.519561514+02:00","level":"INFO","component":"Main","message":"👨‍💻 Owner: LIA - mo0ogly@proton.me"}
+{"timestamp":"2025-08-14T16:35:55.519986463+02:00","level":"INFO","component":"Main","message":"✅ Configuration chargée avec succès"}
+{"timestamp":"2025-08-14T16:35:55.548373609+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/1 (0 records)"}
+{"timestamp":"2025-08-14T16:35:55.578736271+02:00","level":"INFO","component":"GUI","message":"Filtering logs by level: All"}
+{"timestamp":"2025-08-14T16:35:55.599661038+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/page_enriched_2025-08-14_15-28-30.csv"}
+{"timestamp":"2025-08-14T16:35:55.655881076+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/page_enriched_2025-08-14_15-28-30.csv"}
+{"timestamp":"2025-08-14T16:35:55.656257214+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T16:35:58.417373109+02:00","level":"INFO","component":"GUI","message":"🔄 Refreshing data..."}
+{"timestamp":"2025-08-14T16:35:58.417638177+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/page_enriched_2025-08-14_15-28-30.csv"}
+{"timestamp":"2025-08-14T16:35:58.47554555+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/page_enriched_2025-08-14_15-28-30.csv"}
+{"timestamp":"2025-08-14T16:35:58.475711162+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T16:35:58.47906963+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T16:35:58.482217672+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records displayed"}
+{"timestamp":"2025-08-14T17:13:46.110405107+02:00","level":"INFO","component":"Main","message":"👋 LiaCheckScanner fermé avec succès"}
+{"timestamp":"2025-08-14T17:13:52.742639684+02:00","level":"INFO","component":"Main","message":"🚀 Démarrage de LiaCheckScanner v1.0.0"}
+{"timestamp":"2025-08-14T17:13:52.742761643+02:00","level":"INFO","component":"Main","message":"👨‍💻 Owner: LIA - mo0ogly@proton.me"}
+{"timestamp":"2025-08-14T17:13:52.743027403+02:00","level":"INFO","component":"Main","message":"✅ Configuration chargée avec succès"}
+{"timestamp":"2025-08-14T17:13:52.789292974+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/1 (0 records)"}
+{"timestamp":"2025-08-14T17:13:52.832613324+02:00","level":"INFO","component":"GUI","message":"Filtering logs by level: All"}
+{"timestamp":"2025-08-14T17:13:52.860110074+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/page_enriched_2025-08-14_15-28-30.csv"}
+{"timestamp":"2025-08-14T17:13:52.917285911+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/page_enriched_2025-08-14_15-28-30.csv"}
+{"timestamp":"2025-08-14T17:13:52.917659694+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T17:14:26.207515481+02:00","level":"INFO","component":"Main","message":"👋 LiaCheckScanner fermé avec succès"}
+{"timestamp":"2025-08-14T18:11:43.691587343+02:00","level":"INFO","component":"Main","message":"🚀 Démarrage de LiaCheckScanner v1.0.0"}
+{"timestamp":"2025-08-14T18:11:43.69346755+02:00","level":"INFO","component":"Main","message":"👨‍💻 Owner: LIA - mo0ogly@proton.me"}
+{"timestamp":"2025-08-14T18:11:43.694725937+02:00","level":"INFO","component":"Main","message":"✅ Configuration chargée avec succès"}
+{"timestamp":"2025-08-14T18:11:43.775174507+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/1 (0 records)"}
+{"timestamp":"2025-08-14T18:11:43.839579053+02:00","level":"INFO","component":"GUI","message":"Filtering logs by level: All"}
+{"timestamp":"2025-08-14T18:11:43.893698229+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/page_enriched_2025-08-14_15-28-30.csv"}
+{"timestamp":"2025-08-14T18:11:44.020376753+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/page_enriched_2025-08-14_15-28-30.csv"}
+{"timestamp":"2025-08-14T18:11:44.023904079+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T18:19:39.856325739+02:00","level":"INFO","component":"Main","message":"👋 LiaCheckScanner fermé avec succès"}
+{"timestamp":"2025-08-14T18:19:41.95203773+02:00","level":"INFO","component":"Main","message":"🚀 Démarrage de LiaCheckScanner v1.0.0"}
+{"timestamp":"2025-08-14T18:19:41.952287931+02:00","level":"INFO","component":"Main","message":"👨‍💻 Owner: LIA - mo0ogly@proton.me"}
+{"timestamp":"2025-08-14T18:19:41.952721667+02:00","level":"INFO","component":"Main","message":"✅ Configuration chargée avec succès"}
+{"timestamp":"2025-08-14T18:19:41.990057778+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/1 (0 records)"}
+{"timestamp":"2025-08-14T18:19:42.035655162+02:00","level":"INFO","component":"GUI","message":"Filtering logs by level: All"}
+{"timestamp":"2025-08-14T18:19:42.065849608+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/page_enriched_2025-08-14_15-28-30.csv"}
+{"timestamp":"2025-08-14T18:19:42.160344012+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/page_enriched_2025-08-14_15-28-30.csv"}
+{"timestamp":"2025-08-14T18:19:42.198991581+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T18:21:39.121352766+02:00","level":"INFO","component":"Main","message":"👋 LiaCheckScanner fermé avec succès"}
+{"timestamp":"2025-08-14T18:37:27.023179469+02:00","level":"INFO","component":"Main","message":"🚀 Démarrage de LiaCheckScanner v1.0.0"}
+{"timestamp":"2025-08-14T18:37:27.023687746+02:00","level":"INFO","component":"Main","message":"👨‍💻 Owner: LIA - mo0ogly@proton.me"}
+{"timestamp":"2025-08-14T18:37:27.024368596+02:00","level":"INFO","component":"Main","message":"✅ Configuration chargée avec succès"}
+{"timestamp":"2025-08-14T18:37:27.064579907+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/1 (0 records)"}
+{"timestamp":"2025-08-14T18:37:27.113875198+02:00","level":"INFO","component":"GUI","message":"Filtering logs by level: All"}
+{"timestamp":"2025-08-14T18:37:27.152749323+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/page_enriched_2025-08-14_15-28-30.csv"}
+{"timestamp":"2025-08-14T18:37:27.229840727+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/page_enriched_2025-08-14_15-28-30.csv"}
+{"timestamp":"2025-08-14T18:37:27.258882023+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T18:56:31.977487489+02:00","level":"INFO","component":"Extractor","message":"📊 Sauvegarde en CSV..."}
+{"timestamp":"2025-08-14T18:56:31.99635207+02:00","level":"INFO","component":"Extractor","message":"✅ Données sauvegardées: results/full_enriched_2025-08-14_18-56-31.csv"}
+{"timestamp":"2025-08-14T18:56:31.996431709+02:00","level":"INFO","component":"GUI","message":"✅ Full RDAP associated and saved: full_enriched_2025-08-14_18-56-31.csv"}
+{"timestamp":"2025-08-14T18:58:09.786522163+02:00","level":"INFO","component":"Extractor","message":"📊 Sauvegarde en CSV..."}
+{"timestamp":"2025-08-14T18:58:09.803392792+02:00","level":"INFO","component":"Extractor","message":"✅ Données sauvegardées: results/page_enriched_2025-08-14_18-58-09.csv"}
+{"timestamp":"2025-08-14T18:58:35.243797643+02:00","level":"INFO","component":"Main","message":"👋 LiaCheckScanner fermé avec succès"}
+{"timestamp":"2025-08-14T20:33:42.996063502+02:00","level":"INFO","component":"Main","message":"🚀 Démarrage de LiaCheckScanner v1.0.0"}
+{"timestamp":"2025-08-14T20:33:42.996723544+02:00","level":"INFO","component":"Main","message":"👨‍💻 Owner: LIA - mo0ogly@proton.me"}
+{"timestamp":"2025-08-14T20:33:42.997132303+02:00","level":"INFO","component":"Main","message":"✅ Configuration chargée avec succès"}
+{"timestamp":"2025-08-14T20:33:43.037423053+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/1 (0 records)"}
+{"timestamp":"2025-08-14T20:33:43.064443467+02:00","level":"INFO","component":"GUI","message":"Filtering logs by level: All"}
+{"timestamp":"2025-08-14T20:33:43.086086885+02:00","level":"INFO","component":"GUI","message":"📂 Loading data from: results/page_enriched_2025-08-14_18-58-09.csv"}
+{"timestamp":"2025-08-14T20:33:43.141446255+02:00","level":"INFO","component":"GUI","message":"✅ 12064 records loaded from results/page_enriched_2025-08-14_18-58-09.csv"}
+{"timestamp":"2025-08-14T20:33:43.158652886+02:00","level":"INFO","component":"GUI","message":"📄 Pagination updated: page 1/121 (12064 records)"}
+{"timestamp":"2025-08-14T20:45:05.006598663+02:00","level":"INFO","component":"Main","message":"👋 LiaCheckScanner fermé avec succès"}
