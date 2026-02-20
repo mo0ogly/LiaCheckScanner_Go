@@ -4,20 +4,27 @@ import (
 	"time"
 )
 
-// ScannerType représente le type de scanner
+// ScannerType represents the type of internet scanner as a string constant.
 type ScannerType string
 
 const (
-	ScannerTypeUnknown      ScannerType = "unknown"
-	ScannerTypeShodan       ScannerType = "shodan"
-	ScannerTypeCensys       ScannerType = "censys"
-	ScannerTypeBinaryEdge   ScannerType = "binaryedge"
-	ScannerTypeRapid7       ScannerType = "rapid7"
+	// ScannerTypeUnknown represents an unidentified scanner type.
+	ScannerTypeUnknown ScannerType = "unknown"
+	// ScannerTypeShodan represents the Shodan internet scanner.
+	ScannerTypeShodan ScannerType = "shodan"
+	// ScannerTypeCensys represents the Censys internet scanner.
+	ScannerTypeCensys ScannerType = "censys"
+	// ScannerTypeBinaryEdge represents the BinaryEdge internet scanner.
+	ScannerTypeBinaryEdge ScannerType = "binaryedge"
+	// ScannerTypeRapid7 represents the Rapid7 internet scanner.
+	ScannerTypeRapid7 ScannerType = "rapid7"
+	// ScannerTypeShadowServer represents the ShadowServer internet scanner.
 	ScannerTypeShadowServer ScannerType = "shadowserver"
-	ScannerTypeOther        ScannerType = "other"
+	// ScannerTypeOther represents any other scanner type not specifically categorized.
+	ScannerTypeOther ScannerType = "other"
 )
 
-// ScannerData représente les données d'un scanner
+// ScannerData represents a single scanner record with IP information, RDAP details, geolocation, and risk assessment.
 type ScannerData struct {
 	ID                   string      `json:"id" csv:"ID"`
 	IPOrCIDR             string      `json:"ip_or_cidr" csv:"IP/CIDR"`
@@ -62,7 +69,7 @@ type ScannerData struct {
 	UpdatedAt  time.Time `json:"updated_at"`
 }
 
-// RDAPCacheEntry permet de persister les résultats RDAP/Geo pour une IP
+// RDAPCacheEntry stores cached RDAP and geolocation lookup results for a single IP address.
 type RDAPCacheEntry struct {
 	RDAPName          string `json:"rdap_name"`
 	RDAPHandle        string `json:"rdap_handle"`
@@ -87,7 +94,7 @@ type RDAPCacheEntry struct {
 	CachedAt          string `json:"cached_at"`
 }
 
-// RDAPProgressTracker permet de reprendre les enrichissements RDAP là où on s'est arrêté
+// RDAPProgressTracker tracks the state of a batch RDAP enrichment process, enabling resume after interruption.
 type RDAPProgressTracker struct {
 	TotalRecords     int      `json:"total_records"`
 	ProcessedRecords int      `json:"processed_records"`
@@ -99,7 +106,7 @@ type RDAPProgressTracker struct {
 	Completed        bool     `json:"completed"`
 }
 
-// DatabaseConfig représente la configuration de la base de données
+// DatabaseConfig holds settings for repository access, API configuration, and data storage paths.
 type DatabaseConfig struct {
 	RepoURL        string   `json:"repo_url"`
 	LocalPath      string   `json:"local_path"`
@@ -112,9 +119,10 @@ type DatabaseConfig struct {
 	Registries     []string `json:"registries"`
 	AutoUpdate     bool     `json:"auto_update"`
 	UpdateInterval int      `json:"update_interval"`
+	CacheTTLHours  int      `json:"cache_ttl_hours"`
 }
 
-// AppConfig représente la configuration de l'application
+// AppConfig represents the top-level application configuration including theme, logging, and database settings.
 type AppConfig struct {
 	AppName    string         `json:"app_name"`
 	Version    string         `json:"version"`
@@ -127,7 +135,7 @@ type AppConfig struct {
 	Database   DatabaseConfig `json:"database"`
 }
 
-// SearchFilter représente un filtre de recherche
+// SearchFilter defines criteria for filtering scanner data by query, type, country, ISP, risk level, and date range.
 type SearchFilter struct {
 	Query       string      `json:"query"`
 	Type        string      `json:"type"`
@@ -139,18 +147,23 @@ type SearchFilter struct {
 	DateTo      time.Time   `json:"date_to"`
 }
 
-// LogLevel représente le niveau de log
+// LogLevel represents the severity level of a log entry.
 type LogLevel string
 
 const (
-	LogLevelDebug    LogLevel = "DEBUG"
-	LogLevelInfo     LogLevel = "INFO"
-	LogLevelWarning  LogLevel = "WARNING"
-	LogLevelError    LogLevel = "ERROR"
+	// LogLevelDebug indicates verbose debug-level logging.
+	LogLevelDebug LogLevel = "DEBUG"
+	// LogLevelInfo indicates informational messages.
+	LogLevelInfo LogLevel = "INFO"
+	// LogLevelWarning indicates potentially harmful situations.
+	LogLevelWarning LogLevel = "WARNING"
+	// LogLevelError indicates error events that might still allow the application to continue.
+	LogLevelError LogLevel = "ERROR"
+	// LogLevelCritical indicates severe error events that will likely cause the application to abort.
 	LogLevelCritical LogLevel = "CRITICAL"
 )
 
-// LogEntry représente une entrée de log
+// LogEntry represents a single structured log record with timestamp, level, component, and message.
 type LogEntry struct {
 	Timestamp time.Time              `json:"timestamp"`
 	Level     LogLevel               `json:"level"`

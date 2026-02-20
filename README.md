@@ -2,9 +2,11 @@
 
 > Scanner IP extractor and RDAP enrichment tool
 
-[![Go Version](https://img.shields.io/badge/Go-1.19+-blue.svg)](https://golang.org)
+[![Go Version](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/mo0ogly/LiaCheckScanner_Go)
+[![CI](https://github.com/mo0ogly/LiaCheckScanner_Go/actions/workflows/ci.yml/badge.svg)](https://github.com/mo0ogly/LiaCheckScanner_Go/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/mo0ogly/LiaCheckScanner_Go/branch/main/graph/badge.svg)](https://codecov.io/gh/mo0ogly/LiaCheckScanner_Go)
+[![Code style: golangci-lint](https://img.shields.io/badge/lint-golangci--lint-blue.svg)](https://golangci-lint.run/)
 
 **Owner:** mo0ogly@proton.me
 
@@ -39,7 +41,7 @@ go build -o build/liacheckscanner ./cmd/liacheckscanner
 
 ### RDAP Registries
 - ARIN (North America)
-- RIPE (Europe) 
+- RIPE (Europe)
 - APNIC (Asia-Pacific)
 - LACNIC (Latin America)
 - AFRINIC (Africa)
@@ -55,7 +57,7 @@ go build -o build/liacheckscanner ./cmd/liacheckscanner
 ## Installation
 
 ### Requirements
-- Go 1.19 or later
+- Go 1.21 or later
 - Internet connection for cloning repos and RDAP queries
 
 ### Build
@@ -104,13 +106,14 @@ internal/
 
 ## Development
 
+### Lint
 ```bash
-# Run tests
-go test ./...
+golangci-lint run
+```
 
-# Build for different platforms
-GOOS=windows go build -o liacheckscanner.exe ./cmd/liacheckscanner
-GOOS=darwin go build -o liacheckscanner-mac ./cmd/liacheckscanner
+### Tests
+```bash
+go test -v ./...
 ```
 
 ## License
@@ -119,4 +122,4 @@ MIT License - see [LICENSE](LICENSE) file.
 
 ## Contact
 
-mo0ogly@proton.me 
+mo0ogly@proton.me
