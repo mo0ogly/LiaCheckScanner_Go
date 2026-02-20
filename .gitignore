@@ -1,30 +1,50 @@
-# Binaries for programs and plugins
+# Binaries
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
-
-# Test binary, built with `go test -c`
 *.test
 
-# Output of the go coverage tool, specifically when used with LiteIDE
+# Go build/test output
 *.out
-
-# Dependency directories (remove the comment below to include it)
-# vendor/
-
-# Go workspace file
+*.syso
 go.work
 
-# IDE and Editor files
+# Build directory
+build/
+
+# Distribution
+dist/
+
+# Runtime data
+logs/
+results/
+*.log
+*.csv
+
+# Cache
+*.json.cache
+data/cache/
+
+# Config with sensitive data
+config/*_local.json
+config/production.json
+*.key
+*.pem
+
+# Environment / secrets
+.env
+.env.*
+
+# IDE / Editor
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# OS generated files
+# OS files
 .DS_Store
 .DS_Store?
 ._*
@@ -33,47 +53,21 @@ go.work
 ehthumbs.db
 Thumbs.db
 
-# Application specific
-# Build outputs
-build/liacheckscanner*
-dist/
-
-# Runtime data
-logs/*.log
-results/*.csv
-results/*.json
+# Test artifacts
+coverage.out
+coverage.html
 
 # Temporary files
 tmp/
 temp/
 
-# Cache directories
-build/data/*.json
-data/cache/
-
-# Config files with sensitive data
-config/*_local.json
-config/production.json
-*.key
-*.pem
-
-# Test artifacts
-coverage.out
-coverage.html
-
-# Local development
-.env
-.env.local
-
-# Downloaded repositories (will be cloned automatically)
+# Downloaded repositories
 internet-scanners/
 
 # Backup files
 *.bak
 *.backup
 
-# Compiled fyne bundles
-*.go.syso
-
-# Local documentation
-docs/build/ 
+# Documentation build
+docs/build/
+site/

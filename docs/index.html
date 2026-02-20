@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiaCheckScanner Go</title>
+    <style>
+        :root {
+            --color-bg-primary: #0d1117;
+            --color-bg-secondary: #161b22;
+            --color-bg-tertiary: #21262d;
+            --color-border: #30363d;
+            --color-text-primary: #e6edf3;
+            --color-text-secondary: #8b949e;
+            --color-text-link: #58a6ff;
+            --color-accent-green: #3fb950;
+            --color-accent-blue: #58a6ff;
+            --color-accent-purple: #bc8cff;
+            --color-accent-orange: #d29922;
+            --color-code-bg: #161b22;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+        }
+
+        a {
+            color: var(--color-text-link);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            padding: 80px 0 60px;
+            text-align: center;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        header h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header p.tagline {
+            font-size: 20px;
+            color: var(--color-text-secondary);
+            margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .badges {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid var(--color-border);
+            background-color: var(--color-bg-secondary);
+            color: var(--color-text-secondary);
+        }
+
+        .badge--go {
+            border-color: #2b7489;
+            color: #79c0ff;
+        }
+
+        .badge--license {
+            border-color: #9e6a03;
+            color: var(--color-accent-orange);
+        }
+
+        .badge--ci {
+            border-color: #238636;
+            color: var(--color-accent-green);
+        }
+
+        /* Sections */
+        section {
+            padding: 64px 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        section:last-child {
+            border-bottom: none;
+        }
+
+        section h2 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 32px;
+            color: var(--color-text-primary);
+        }
+
+        /* Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 640px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .feature-card {
+            background-color: var(--color-bg-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 24px;
+            transition: border-color 0.2s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--color-accent-blue);
+        }
+
+        .feature-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--color-text-primary);
+        }
+
+        .feature-card .icon {
+            font-size: 28px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Code Blocks */
+        pre {
+            background-color: var(--color-code-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            color: var(--color-text-primary);
+        }
+
+        .code-comment {
+            color: var(--color-text-secondary);
+        }
+
+        .code-command {
+            color: var(--color-accent-green);
+        }
+
+        /* Architecture */
+        .architecture-tree {
+            background-color: var(--color-code-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 24px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--color-text-secondary);
+        }
+
+        .architecture-tree .dir {
+            color: var(--color-accent-blue);
+            font-weight: 600;
+        }
+
+        .architecture-tree .desc {
+            color: var(--color-text-secondary);
+        }
+
+        /* Links / CTA */
+        .cta-section {
+            text-align: center;
+            padding: 80px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            margin: 8px;
+        }
+
+        .btn--primary {
+            background-color: var(--color-accent-blue);
+            color: var(--color-bg-primary);
+        }
+
+        .btn--primary:hover {
+            background-color: #79c0ff;
+            text-decoration: none;
+        }
+
+        .btn--secondary {
+            background-color: var(--color-bg-tertiary);
+            color: var(--color-text-primary);
+            border: 1px solid var(--color-border);
+        }
+
+        .btn--secondary:hover {
+            background-color: var(--color-border);
+            text-decoration: none;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            color: var(--color-text-secondary);
+            font-size: 14px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        footer a {
+            color: var(--color-text-secondary);
+        }
+
+        footer a:hover {
+            color: var(--color-text-link);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <h1>LiaCheckScanner Go</h1>
+            <p class="tagline">Scanner IP extractor and RDAP enrichment tool. Extract, enrich, and analyze internet scanner IP addresses.</p>
+            <div class="badges">
+                <span class="badge badge--go">Go 1.21+</span>
+                <span class="badge badge--license">MIT License</span>
+                <span class="badge badge--ci">CI Passing</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features -->
+    <section>
+        <div class="container">
+            <h2>Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="icon">&#128269;</span>
+                    <h3>IP Extraction</h3>
+                    <p>Parses Netfilter .nft files from the internet-scanners repository to extract IPv4 and IPv6 addresses and CIDR blocks.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">&#127760;</span>
+                    <h3>RDAP Enrichment</h3>
+                    <p>Enriches extracted IPs with WHOIS data from all five Regional Internet Registries: ARIN, RIPE, APNIC, LACNIC, and AFRINIC.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">&#128421;</span>
+                    <h3>GUI Interface</h3>
+                    <p>Built-in graphical interface using Fyne with a table view, pagination, and interactive controls for browsing results.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">&#128196;</span>
+                    <h3>CSV Export</h3>
+                    <p>Export enriched results to CSV files for further analysis in spreadsheets or other data processing tools.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Start -->
+    <section>
+        <div class="container">
+            <h2>Quick Start</h2>
+            <p style="color: var(--color-text-secondary); margin-bottom: 24px;">Get up and running in under a minute.</p>
+
+            <pre><code><span class="code-comment"># Clone the repository</span>
+<span class="code-command">git clone https://github.com/mo0ogly/LiaCheckScanner_Go.git</span>
+<span class="code-command">cd LiaCheckScanner_Go</span>
+
+<span class="code-comment"># Download dependencies</span>
+<span class="code-command">go mod download</span>
+
+<span class="code-comment"># Build the binary</span>
+<span class="code-command">go build -o build/liacheckscanner ./cmd/liacheckscanner</span>
+
+<span class="code-comment"># Run</span>
+<span class="code-command">./build/liacheckscanner</span></code></pre>
+
+            <p style="color: var(--color-text-secondary); margin-top: 16px;">Or use the Makefile:</p>
+
+            <pre><code><span class="code-command">make build</span>
+<span class="code-command">make run</span></code></pre>
+        </div>
+    </section>
+
+    <!-- Architecture -->
+    <section>
+        <div class="container">
+            <h2>Architecture</h2>
+            <p style="color: var(--color-text-secondary); margin-bottom: 24px;">Clean project structure following Go conventions.</p>
+            <div class="architecture-tree">
+                <span class="dir">cmd/liacheckscanner/</span>     <span class="desc"># Main entry point</span><br>
+                <span class="dir">internal/</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="dir">config/</span>              <span class="desc"># Configuration management</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="dir">extractor/</span>           <span class="desc"># IP extraction and RDAP queries</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="dir">gui/</span>                 <span class="desc"># Fyne GUI components</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="dir">logger/</span>              <span class="desc"># Structured logging</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="dir">models/</span>              <span class="desc"># Data structures</span><br>
+                <span class="dir">config/</span>                  <span class="desc"># Runtime configuration files</span><br>
+                <span class="dir">docs/</span>                    <span class="desc"># GitHub Pages website</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="cta-section">
+        <div class="container">
+            <h2>Get Started</h2>
+            <p style="color: var(--color-text-secondary); margin-bottom: 32px;">LiaCheckScanner Go is open source and available on GitHub.</p>
+            <a href="https://github.com/mo0ogly/LiaCheckScanner_Go" class="btn btn--primary">View on GitHub</a>
+            <a href="https://github.com/mo0ogly/LiaCheckScanner_Go/releases" class="btn btn--secondary">Download Releases</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>LiaCheckScanner Go &mdash; MIT License &mdash; <a href="mailto:mo0ogly@proton.me">mo0ogly@proton.me</a></p>
+        </div>
+    </footer>
+
+</body>
+</html>

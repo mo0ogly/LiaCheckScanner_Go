@@ -13,7 +13,7 @@ import (
 	"github.com/lia/liacheckscanner_go/internal/models"
 )
 
-// Logger représente le système de logging
+// Logger provides structured, leveled logging with file output and automatic log rotation.
 type Logger struct {
 	mu       sync.Mutex
 	logFile  *os.File
@@ -23,7 +23,7 @@ type Logger struct {
 	backups  int
 }
 
-// NewLogger crée un nouveau logger
+// NewLogger creates a new Logger that writes to both stdout and a daily log file in the logs directory.
 func NewLogger() *Logger {
 	logger := &Logger{
 		logLevel: models.LogLevelInfo,
@@ -55,14 +55,14 @@ func NewLogger() *Logger {
 	return logger
 }
 
-// SetLogLevel définit le niveau de log
+// SetLogLevel sets the minimum log level for messages to be recorded.
 func (l *Logger) SetLogLevel(level models.LogLevel) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	l.logLevel = level
 }
 
-// GetLogLevel retourne le niveau de log actuel
+// GetLogLevel returns the current minimum log level.
 func (l *Logger) GetLogLevel() models.LogLevel {
 	l.mu.Lock()
 	defer l.mu.Unlock()
@@ -136,7 +136,7 @@ func (l *Logger) log(level models.LogLevel, component, message string, data map[
 	l.checkRotation()
 }
 
-// Debug enregistre un message de debug
+// Debug records a debug-level log message for the given component.
 func (l *Logger) Debug(component, message string, data ...map[string]interface{}) {
 	var dataMap map[string]interface{}
 	if len(data) > 0 {
@@ -145,7 +145,7 @@ func (l *Logger) Debug(component, message string, data ...map[string]interface{}
 	l.log(models.LogLevelDebug, component, message, dataMap)
 }
 
-// Info enregistre un message d'information
+// Info records an informational log message for the given component.
 func (l *Logger) Info(component, message string, data ...map[string]interface{}) {
 	var dataMap map[string]interface{}
 	if len(data) > 0 {
@@ -154,7 +154,7 @@ func (l *Logger) Info(component, message string, data ...map[string]interface{})
 	l.log(models.LogLevelInfo, component, message, dataMap)
 }
 
-// Warning enregistre un avertissement
+// Warning records a warning-level log message for the given component.
 func (l *Logger) Warning(component, message string, data ...map[string]interface{}) {
 	var dataMap map[string]interface{}
 	if len(data) > 0 {
@@ -163,7 +163,7 @@ func (l *Logger) Warning(component, message string, data ...map[string]interface
 	l.log(models.LogLevelWarning, component, message, dataMap)
 }
 
-// Error enregistre une erreur
+// Error records an error-level log message for the given component.
 func (l *Logger) Error(component, message string, data ...map[string]interface{}) {
 	var dataMap map[string]interface{}
 	if len(data) > 0 {
@@ -172,7 +172,7 @@ func (l *Logger) Error(component, message string, data ...map[string]interface{}
 	l.log(models.LogLevelError, component, message, dataMap)
 }
 
-// Critical enregistre une erreur critique
+// Critical records a critical-level log message for the given component.
 func (l *Logger) Critical(component, message string, data ...map[string]interface{}) {
 	var dataMap map[string]interface{}
 	if len(data) > 0 {
@@ -181,7 +181,7 @@ func (l *Logger) Critical(component, message string, data ...map[string]interfac
 	l.log(models.LogLevelCritical, component, message, dataMap)
 }
 
-// GetEntries retourne les entrées de log
+// GetEntries returns a copy of all in-memory log entries.
 func (l *Logger) GetEntries() []models.LogEntry {
 	l.mu.Lock()
 	defer l.mu.Unlock()
@@ -192,7 +192,7 @@ func (l *Logger) GetEntries() []models.LogEntry {
 	return entries
 }
 
-// GetRecentEntries retourne les entrées récentes
+// GetRecentEntries returns the most recent count log entries.
 func (l *Logger) GetRecentEntries(count int) []models.LogEntry {
 	entries := l.GetEntries()
 	if count > len(entries) {
@@ -201,7 +201,7 @@ func (l *Logger) GetRecentEntries(count int) []models.LogEntry {
 	return entries[len(entries)-count:]
 }
 
-// ClearEntries efface les entrées de log
+// ClearEntries removes all in-memory log entries.
 func (l *Logger) ClearEntries() {
 	l.mu.Lock()
 	defer l.mu.Unlock()
@@ -252,7 +252,7 @@ func (l *Logger) cleanupOldLogs(logsDir string) {
 	// selon le nombre de backups configuré
 }
 
-// Close ferme le logger
+// Close closes the underlying log file and releases resources.
 func (l *Logger) Close() error {
 	l.mu.Lock()
 	defer l.mu.Unlock()

@@ -6,41 +6,44 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
     - name: Set up Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5
       with:
-        go-version: 1.19
-    
+        go-version: '1.21'
+
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y libgl1-mesa-dev xorg-dev
-    
+
     - name: Cache Go modules
-      uses: actions/cache@v3
+      uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
-    
+
     - name: Download dependencies
       run: go mod download
-    
+
     - name: Run tests
       run: go test -v ./...
-    
+
     - name: Run tests with coverage
       run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
-    
+
     - name: Upload coverage reports
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@e28ff129e5465c2c0dcc6f003fc735cb6ae0c673
       with:
         file: ./coverage.out
         flags: unittests
@@ -53,29 +56,29 @@ jobs:
       matrix:
         goos: [linux, windows, darwin]
         goarch: [amd64]
-    
+
     steps:
-    - uses: actions/checkout@v4
-    
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
     - name: Set up Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5
       with:
-        go-version: 1.19
-    
+        go-version: '1.21'
+
     - name: Install dependencies (Linux)
       if: matrix.goos == 'linux'
       run: |
         sudo apt-get update
         sudo apt-get install -y libgl1-mesa-dev xorg-dev
-    
+
     - name: Cache Go modules
-      uses: actions/cache@v3
+      uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
-    
+
     - name: Build
       env:
         GOOS: ${{ matrix.goos }}
@@ -85,15 +88,15 @@ jobs:
         mkdir -p dist
         VERSION=$(git describe --tags --always --dirty)
         LDFLAGS="-s -w -X main.Version=$VERSION"
-        
+
         if [ "$GOOS" = "windows" ]; then
           go build -ldflags="$LDFLAGS" -o dist/liacheckscanner-${{ matrix.goos }}-${{ matrix.goarch }}.exe ./cmd/liacheckscanner
         else
           go build -ldflags="$LDFLAGS" -o dist/liacheckscanner-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/liacheckscanner
         fi
-    
+
     - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: liacheckscanner-${{ matrix.goos }}-${{ matrix.goarch }}
         path: dist/
@@ -101,35 +104,20 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
     - name: Set up Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5
       with:
-        go-version: 1.19
-    
+        go-version: '1.21'
+
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y libgl1-mesa-dev xorg-dev
-    
+
     - name: golangci-lint
-      uses: golangci/golangci-lint-action@v3
+      uses: golangci/golangci-lint-action@aaa42aa0628b4ae2578232a66b541047968fac86
       with:
         version: latest
         args: --timeout=5m
-
-  security:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: 1.19
-    
-    - name: Run Gosec Security Scanner
-      uses: securecodewarrior/github-action-gosec@master
-      with:
-        args: './...' 

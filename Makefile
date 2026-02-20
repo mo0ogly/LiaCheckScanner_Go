@@ -1,7 +1,7 @@
 # LiaCheckScanner_Go - Makefile
 # Owner: LIA - mo0ogly@proton.me
 
-.PHONY: help build clean test install run dev build-all build-linux build-windows build-darwin
+.PHONY: help build clean test install run dev build-all build-linux build-windows build-darwin security docs docs-build
 
 # Variables
 APP_NAME = liacheckscanner
@@ -32,7 +32,7 @@ build: ## Compiler l'application
 
 clean: ## Nettoyer les fichiers de build
 	@echo "$(YELLOW)🧹 Nettoyage...$(RESET)"
-	@rm -rf $(BUILD_DIR)
+	@rm -rf $(BUILD_DIR) dist/ coverage.*
 	@go clean
 	@echo "$(GREEN)✅ Nettoyage terminé$(RESET)"
 
@@ -111,6 +111,14 @@ lint: ## Linter le code
 		echo "$(YELLOW)⚠️ golangci-lint non installé$(RESET)"; \
 	fi
 
+security: ## Analyse de sécurité du code
+	@echo "$(BLUE)🔒 Analyse de sécurité...$(RESET)"
+	@if command -v gosec > /dev/null; then \
+		gosec ./...; \
+	else \
+		echo "$(YELLOW)⚠️ gosec non installé. Installer avec: go install github.com/securego/gosec/v2/cmd/gosec@latest$(RESET)"; \
+	fi
+
 bench: ## Benchmarks
 	@echo "$(BLUE)⚡ Benchmarks...$(RESET)"
 	go test -bench=. ./...
@@ -132,4 +140,10 @@ docker-build: ## Build Docker
 
 docker-run: ## Run Docker
 	@echo "$(BLUE)🐳 Run Docker...$(RESET)"
-	docker run -it --rm $(APP_NAME):$(VERSION) 
+	docker run -it --rm $(APP_NAME):$(VERSION)
+
+docs: ## Serve documentation locally
+	@mkdocs serve
+
+docs-build: ## Build documentation
+	@mkdocs build
