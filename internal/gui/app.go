@@ -3,13 +3,10 @@
 package gui
 
 import (
-	"encoding/csv"
 	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
-	"strconv"
-	"strings"
 	"time"
 
 	"fyne.io/fyne/v2"
@@ -204,28 +201,11 @@ func (a *App) createDashboardTab() fyne.CanvasObject {
 // updatePagination updates pagination state and refreshes the interface
 // It calculates page numbers, validates current page, and updates the display
 func (a *App) updatePagination() {
-	// Calculate total pages
-	if a.itemsPerPage > 0 {
-		a.totalPages = (len(a.data) + a.itemsPerPage - 1) / a.itemsPerPage
-		if a.totalPages == 0 {
-			a.totalPages = 1
-		}
-	}
-
-	// Validate current page
-	if a.currentPage > a.totalPages {
-		a.currentPage = a.totalPages
-	}
-	if a.currentPage < 1 {
-		a.currentPage = 1
-	}
-
-	// Calculate start and end indices
-	startIndex := (a.currentPage - 1) * a.itemsPerPage
-	endIndex := startIndex + a.itemsPerPage
-	if endIndex > len(a.data) {
-		endIndex = len(a.data)
-	}
+	totalPages, validPage, startIndex, endIndex := CalculatePagination(
+		len(a.data), a.itemsPerPage, a.currentPage,
+	)
+	a.totalPages = totalPages
+	a.currentPage = validPage
 
 	// Update pagination info
 	if a.paginationInfo != nil {
@@ -365,204 +345,20 @@ func (a *App) updateStats() {
 }
 
 // countUniqueIPs counts unique IP addresses in the dataset
-func (a *App) countUniqueIPs() int {
-	unique := make(map[string]bool)
-	for _, item := range a.data {
-		unique[item.IPOrCIDR] = true
-	}
-	return len(unique)
-}
+func (a *App) countUniqueIPs() int { return CountUniqueIPs(a.data) }
 
 // countUniqueCountries counts unique countries in the dataset
-func (a *App) countUniqueCountries() int {
-	unique := make(map[string]bool)
-	for _, item := range a.data {
-		if item.CountryCode != "" {
-			unique[item.CountryCode] = true
-		}
-	}
-	return len(unique)
-}
+func (a *App) countUniqueCountries() int { return CountUniqueCountries(a.data) }
 
 // countUniqueScanners counts unique scanners in the dataset
-func (a *App) countUniqueScanners() int {
-	unique := make(map[string]bool)
-	for _, item := range a.data {
-		unique[item.ScannerName] = true
-	}
-	return len(unique)
-}
+func (a *App) countUniqueScanners() int { return CountUniqueScanners(a.data) }
 
 // countHighRisk counts high-risk entries in the dataset
-func (a *App) countHighRisk() int {
-	count := 0
-	for _, item := range a.data {
-		if item.RiskLevel == "High" {
-			count++
-		}
-	}
-	return count
-}
+func (a *App) countHighRisk() int { return CountHighRisk(a.data) }
 
 // loadFromCSV loads data from a CSV file using header-based mapping
 func (a *App) loadFromCSV(filename string) ([]models.ScannerData, error) {
-	file, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	reader := csv.NewReader(file)
-	records, err := reader.ReadAll()
-	if err != nil {
-		return nil, err
-	}
-
-	if len(records) < 2 {
-		return nil, fmt.Errorf("insufficient data in CSV file")
-	}
-
-	// Build header index map
-	headers := records[0]
-	index := func(name string) int {
-		for i, h := range headers {
-			if strings.EqualFold(strings.TrimSpace(h), strings.TrimSpace(name)) {
-				return i
-			}
-		}
-		return -1
-	}
-
-	ipIdx := index("IP/CIDR")
-	scannerNameIdx := index("Scanner Name")
-	scannerTypeIdx := index("Scanner Type")
-	countryCodeIdx := index("Country Code")
-	ispIdx := index("ISP")
-	orgIdx := index("Organization")
-	rdapNameIdx := index("RDAP Name")
-	rdapHandleIdx := index("RDAP Handle")
-	rdapCIDRIdx := index("RDAP CIDR")
-	registryIdx := index("RDAP Registry")
-	asnIdx := index("ASN")
-	asNameIdx := index("AS Name")
-	reverseIdx := index("Reverse DNS")
-	riskIdx := index("Risk Level")
-	scoreIdx := index("Abuse Confidence Score")
-	domainIdx := index("Domain")
-	lastSeenIdx := index("Last Seen")
-	tagsIdx := index("Tags")
-	notesIdx := index("Notes")
-	parentHandleIdx := index("Parent Handle")
-	eventRegIdx := index("Event Registration")
-	eventChangedIdx := index("Event Last Changed")
-	startAddrIdx := index("Start Address")
-	endAddrIdx := index("End Address")
-	ipVersionIdx := index("IP Version")
-	rdapTypeIdx := index("RDAP Type")
-	abuseEmailIdx := index("Abuse Email")
-	techEmailIdx := index("Tech Email")
-
-	var data []models.ScannerData
-	for _, record := range records[1:] { // Skip header
-		item := models.ScannerData{}
-		if ipIdx >= 0 && ipIdx < len(record) {
-			item.IPOrCIDR = record[ipIdx]
-		}
-		if scannerNameIdx >= 0 && scannerNameIdx < len(record) {
-			item.ScannerName = record[scannerNameIdx]
-		}
-		if scannerTypeIdx >= 0 && scannerTypeIdx < len(record) {
-			item.ScannerType = models.ScannerType(record[scannerTypeIdx])
-		}
-		if countryCodeIdx >= 0 && countryCodeIdx < len(record) {
-			item.CountryCode = record[countryCodeIdx]
-		}
-		if ispIdx >= 0 && ispIdx < len(record) {
-			item.ISP = record[ispIdx]
-		}
-		if orgIdx >= 0 && orgIdx < len(record) {
-			item.Organization = record[orgIdx]
-		}
-		if rdapNameIdx >= 0 && rdapNameIdx < len(record) {
-			item.RDAPName = record[rdapNameIdx]
-		}
-		if rdapHandleIdx >= 0 && rdapHandleIdx < len(record) {
-			item.RDAPHandle = record[rdapHandleIdx]
-		}
-		if rdapCIDRIdx >= 0 && rdapCIDRIdx < len(record) {
-			item.RDAPCIDR = record[rdapCIDRIdx]
-		}
-		if registryIdx >= 0 && registryIdx < len(record) {
-			item.Registry = record[registryIdx]
-		}
-		if startAddrIdx >= 0 && startAddrIdx < len(record) {
-			item.StartAddress = record[startAddrIdx]
-		}
-		if endAddrIdx >= 0 && endAddrIdx < len(record) {
-			item.EndAddress = record[endAddrIdx]
-		}
-		if ipVersionIdx >= 0 && ipVersionIdx < len(record) {
-			item.IPVersion = record[ipVersionIdx]
-		}
-		if rdapTypeIdx >= 0 && rdapTypeIdx < len(record) {
-			item.RDAPType = record[rdapTypeIdx]
-		}
-		if parentHandleIdx >= 0 && parentHandleIdx < len(record) {
-			item.ParentHandle = record[parentHandleIdx]
-		}
-		if eventRegIdx >= 0 && eventRegIdx < len(record) {
-			item.EventRegistration = record[eventRegIdx]
-		}
-		if eventChangedIdx >= 0 && eventChangedIdx < len(record) {
-			item.EventLastChanged = record[eventChangedIdx]
-		}
-		if asnIdx >= 0 && asnIdx < len(record) {
-			item.ASN = record[asnIdx]
-		}
-		if asNameIdx >= 0 && asNameIdx < len(record) {
-			item.ASName = record[asNameIdx]
-		}
-		if reverseIdx >= 0 && reverseIdx < len(record) {
-			item.ReverseDNS = record[reverseIdx]
-		}
-		if riskIdx >= 0 && riskIdx < len(record) {
-			item.RiskLevel = record[riskIdx]
-		}
-		if scoreIdx >= 0 && scoreIdx < len(record) {
-			if score, err := strconv.Atoi(record[scoreIdx]); err == nil {
-				item.AbuseConfidenceScore = score
-			}
-		}
-		if domainIdx >= 0 && domainIdx < len(record) {
-			item.Domain = record[domainIdx]
-		}
-		if lastSeenIdx >= 0 && lastSeenIdx < len(record) {
-			if t, err := time.Parse("2006-01-02 15:04:05", record[lastSeenIdx]); err == nil {
-				item.LastSeen = t
-			} else {
-				item.LastSeen = time.Now()
-			}
-		} else {
-			item.LastSeen = time.Now()
-		}
-		if tagsIdx >= 0 && tagsIdx < len(record) {
-			if ts := strings.TrimSpace(record[tagsIdx]); ts != "" {
-				item.Tags = strings.Split(ts, ",")
-			}
-		}
-		if notesIdx >= 0 && notesIdx < len(record) {
-			item.Notes = record[notesIdx]
-		}
-		if abuseEmailIdx >= 0 && abuseEmailIdx < len(record) {
-			item.AbuseEmail = record[abuseEmailIdx]
-		}
-		if techEmailIdx >= 0 && techEmailIdx < len(record) {
-			item.TechEmail = record[techEmailIdx]
-		}
-		data = append(data, item)
-	}
-
-	return data, nil
+	return LoadCSVData(filename)
 }
 
 // Run starts the application and enters the main event loop.

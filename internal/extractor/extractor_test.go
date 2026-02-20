@@ -2,6 +2,9 @@ package extractor
 
 import (
 	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -483,61 +486,24 @@ func TestGetRiskLevel(t *testing.T) {
 	}
 }
 
-// -------------------------------------------------------
-// isTextFile
-// -------------------------------------------------------
-
-func TestIsTextFile(t *testing.T) {
-	dir := t.TempDir()
-	ext := newTestExtractor(t, dir)
-
-	textPaths := []string{
-		"file.txt", "README.md", "data.json", "config.yaml", "config.yml",
-		"doc.xml", "results.csv", "settings.conf", "app.cfg", "setup.ini",
-		"run.sh", "script.py", "app.js", "page.html", "style.css",
-		"noextension", // no extension -> true
-	}
-
-	for _, p := range textPaths {
-		if !ext.isTextFile(p) {
-			t.Errorf("isTextFile(%q) should be true", p)
-		}
-	}
-
-	binaryPaths := []string{
-		"image.png", "photo.jpg", "archive.tar.gz", "binary.exe", "data.bin",
-	}
-
-	for _, p := range binaryPaths {
-		if ext.isTextFile(p) {
-			t.Errorf("isTextFile(%q) should be false", p)
-		}
-	}
-}
 
 // -------------------------------------------------------
 // applyCache / updateCache
 // -------------------------------------------------------
 
 func TestApplyCache_Miss(t *testing.T) {
-	dir := t.TempDir()
-	ext := newTestExtractor(t, dir)
-
 	cache := &rdapCache{
 		Entries: map[string]models.RDAPCacheEntry{},
 	}
 	data := &models.ScannerData{IPOrCIDR: "1.2.3.4"}
 
-	applied := ext.applyCache("1.2.3.4", data, cache)
+	applied := cache.applyCache("1.2.3.4", data)
 	if applied {
 		t.Error("applyCache should return false for cache miss")
 	}
 }
 
 func TestApplyCache_Hit(t *testing.T) {
-	dir := t.TempDir()
-	ext := newTestExtractor(t, dir)
-
 	cache := &rdapCache{
 		Entries: map[string]models.RDAPCacheEntry{
 			"1.2.3.4": {
@@ -556,7 +522,7 @@ func TestApplyCache_Hit(t *testing.T) {
 	}
 
 	data := &models.ScannerData{IPOrCIDR: "1.2.3.4"}
-	applied := ext.applyCache("1.2.3.4", data, cache)
+	applied := cache.applyCache("1.2.3.4", data)
 	if !applied {
 		t.Fatal("applyCache should return true for cache hit")
 	}
@@ -585,9 +551,6 @@ func TestApplyCache_Hit(t *testing.T) {
 }
 
 func TestUpdateCache_AddsEntry(t *testing.T) {
-	dir := t.TempDir()
-	ext := newTestExtractor(t, dir)
-
 	cache := &rdapCache{
 		Entries: map[string]models.RDAPCacheEntry{},
 	}
@@ -602,7 +565,7 @@ func TestUpdateCache_AddsEntry(t *testing.T) {
 		AbuseEmail:  "abuse@fr.com",
 	}
 
-	ext.updateCache("5.6.7.8", data, cache)
+	cache.updateCache("5.6.7.8", data)
 
 	entry, ok := cache.Entries["5.6.7.8"]
 	if !ok {
@@ -624,9 +587,6 @@ func TestUpdateCache_AddsEntry(t *testing.T) {
 }
 
 func TestUpdateCache_OverwritesExisting(t *testing.T) {
-	dir := t.TempDir()
-	ext := newTestExtractor(t, dir)
-
 	cache := &rdapCache{
 		Entries: map[string]models.RDAPCacheEntry{
 			"1.1.1.1": {RDAPName: "OldName"},
@@ -638,7 +598,7 @@ func TestUpdateCache_OverwritesExisting(t *testing.T) {
 		RDAPName: "NewName",
 	}
 
-	ext.updateCache("1.1.1.1", data, cache)
+	cache.updateCache("1.1.1.1", data)
 
 	entry := cache.Entries["1.1.1.1"]
 	if entry.RDAPName != "NewName" {
@@ -1203,4 +1163,1164 @@ func TestNewExtractor_ZeroThrottle_NoLimiting(t *testing.T) {
 	if ext.rateLimiter.interval != 0 {
 		t.Errorf("Expected interval 0 for zero throttle, got %v", ext.rateLimiter.interval)
 	}
+}
+
+// -------------------------------------------------------
+// IsIPProcessed with ProcessedIPSet (O(1) lookup)
+// -------------------------------------------------------
+
+func TestIsIPProcessed_WithSet(t *testing.T) {
+	dir := t.TempDir()
+	ext := newTestExtractor(t, dir)
+
+	tracker := &models.RDAPProgressTracker{
+		ProcessedIPs:   []string{"1.1.1.1", "2.2.2.2"},
+		ProcessedIPSet: map[string]struct{}{"1.1.1.1": {}, "2.2.2.2": {}},
+	}
+
+	if !ext.IsIPProcessed("1.1.1.1", tracker) {
+		t.Error("1.1.1.1 should be processed (via set)")
+	}
+	if ext.IsIPProcessed("3.3.3.3", tracker) {
+		t.Error("3.3.3.3 should NOT be processed (via set)")
+	}
+}
+
+// -------------------------------------------------------
+// SaveProgressTracker / LoadProgressTracker / ClearProgressTracker
+// -------------------------------------------------------
+
+func TestSaveLoadProgressTracker_RoundTrip(t *testing.T) {
+	dir := t.TempDir()
+	buildDataDir := filepath.Join(dir, "build", "data")
+	if err := os.MkdirAll(buildDataDir, 0755); err != nil {
+		t.Fatalf("MkdirAll: %v", err)
+	}
+
+	origDir, _ := os.Getwd()
+	if err := os.Chdir(dir); err != nil {
+		t.Fatalf("Chdir: %v", err)
+	}
+	defer func() { _ = os.Chdir(origDir) }()
+
+	ext := newTestExtractor(t, dir)
+
+	tracker := &models.RDAPProgressTracker{
+		TotalRecords:     100,
+		ProcessedRecords: 42,
+		ProcessedIPs:     []string{"1.1.1.1", "2.2.2.2"},
+		StartedAt:        time.Now().Format(time.RFC3339),
+		Workers:          4,
+		Throttle:         1.0,
+		Completed:        false,
+	}
+
+	if err := ext.SaveProgressTracker(tracker); err != nil {
+		t.Fatalf("SaveProgressTracker: %v", err)
+	}
+
+	loaded := ext.LoadProgressTracker()
+	if loaded.TotalRecords != 100 {
+		t.Errorf("TotalRecords: want 100, got %d", loaded.TotalRecords)
+	}
+	if loaded.ProcessedRecords != 42 {
+		t.Errorf("ProcessedRecords: want 42, got %d", loaded.ProcessedRecords)
+	}
+	if len(loaded.ProcessedIPs) != 2 {
+		t.Errorf("ProcessedIPs: want 2, got %d", len(loaded.ProcessedIPs))
+	}
+	if loaded.ProcessedIPSet == nil {
+		t.Error("ProcessedIPSet should be built by LoadProgressTracker")
+	}
+	if _, ok := loaded.ProcessedIPSet["1.1.1.1"]; !ok {
+		t.Error("ProcessedIPSet should contain 1.1.1.1")
+	}
+}
+
+func TestClearProgressTracker(t *testing.T) {
+	dir := t.TempDir()
+	buildDataDir := filepath.Join(dir, "build", "data")
+	if err := os.MkdirAll(buildDataDir, 0755); err != nil {
+		t.Fatalf("MkdirAll: %v", err)
+	}
+
+	origDir, _ := os.Getwd()
+	if err := os.Chdir(dir); err != nil {
+		t.Fatalf("Chdir: %v", err)
+	}
+	defer func() { _ = os.Chdir(origDir) }()
+
+	ext := newTestExtractor(t, dir)
+
+	tracker := &models.RDAPProgressTracker{
+		TotalRecords: 10,
+		ProcessedIPs: []string{"1.1.1.1"},
+	}
+	if err := ext.SaveProgressTracker(tracker); err != nil {
+		t.Fatalf("SaveProgressTracker: %v", err)
+	}
+
+	if err := ext.ClearProgressTracker(); err != nil {
+		t.Fatalf("ClearProgressTracker: %v", err)
+	}
+
+	// After clearing, loading should return an empty tracker.
+	loaded := ext.LoadProgressTracker()
+	if len(loaded.ProcessedIPs) != 0 {
+		t.Errorf("Expected 0 IPs after clear, got %d", len(loaded.ProcessedIPs))
+	}
+}
+
+func TestLoadProgressTracker_MissingFile(t *testing.T) {
+	dir := t.TempDir()
+
+	origDir, _ := os.Getwd()
+	if err := os.Chdir(dir); err != nil {
+		t.Fatalf("Chdir: %v", err)
+	}
+	defer func() { _ = os.Chdir(origDir) }()
+
+	ext := newTestExtractor(t, dir)
+	tracker := ext.LoadProgressTracker()
+
+	if tracker == nil {
+		t.Fatal("LoadProgressTracker should never return nil")
+	}
+	if len(tracker.ProcessedIPs) != 0 {
+		t.Errorf("Expected empty ProcessedIPs, got %d", len(tracker.ProcessedIPs))
+	}
+	if tracker.ProcessedIPSet == nil {
+		t.Error("ProcessedIPSet should be initialized even for missing file")
+	}
+}
+
+// -------------------------------------------------------
+// performRDAPFull with httptest
+// -------------------------------------------------------
+
+func TestPerformRDAPFull_AllRegistriesFail(t *testing.T) {
+	// Server that always returns 404 for all requests.
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+	}))
+	defer srv.Close()
+
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{
+		LocalPath:  dir,
+		ResultsDir: filepath.Join(dir, "results"),
+	}
+	ext := NewExtractor(cfg, log)
+	ext.rdapEndpoints = []string{srv.URL + "/ip/"}
+	ext.apiClient = &http.Client{Timeout: 2 * time.Second}
+
+	data := &models.ScannerData{IPOrCIDR: "192.0.2.1"}
+	err := ext.performRDAPFull("192.0.2.1", data)
+
+	// Should return an error since all registries fail (timeout or connection error).
+	if err == nil {
+		t.Fatal("performRDAPFull should return error when all registries fail")
+	}
+	if !strings.Contains(err.Error(), "no RDAP registry responded") {
+		t.Errorf("Expected 'no RDAP registry responded' error, got: %v", err)
+	}
+}
+
+func TestEnrichWithAPIUsingCache_UpdatesCacheAfterEnrichment(t *testing.T) {
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{
+		LocalPath:  dir,
+		ResultsDir: filepath.Join(dir, "results"),
+	}
+	ext := NewExtractor(cfg, log)
+	// Very short timeout so external requests fail fast.
+	ext.apiClient = &http.Client{Timeout: 100 * time.Millisecond}
+
+	cache := &rdapCache{Entries: map[string]models.RDAPCacheEntry{}, Path: filepath.Join(dir, "cache.json")}
+	data := &models.ScannerData{IPOrCIDR: "10.0.0.1"}
+
+	_ = ext.enrichUsingCache(data, cache)
+
+	// Even if enrichment fails, the cache should have been updated.
+	if _, ok := cache.Entries["10.0.0.1"]; !ok {
+		t.Error("Cache should have an entry for 10.0.0.1 after enrichment attempt")
+	}
+}
+
+// -------------------------------------------------------
+// enrichUsingCache (rdapCache)
+// -------------------------------------------------------
+
+func TestEnrichUsingCache_CacheHit(t *testing.T) {
+	dir := t.TempDir()
+	ext := newTestExtractor(t, dir)
+
+	cache := &rdapCache{
+		Entries: map[string]models.RDAPCacheEntry{
+			"10.0.0.1": {
+				RDAPName:    "CachedName",
+				CountryCode: "DE",
+				CountryName: "Germany",
+				ISP:         "CachedISP",
+			},
+		},
+		Path: filepath.Join(dir, "cache.json"),
+	}
+
+	data := &models.ScannerData{IPOrCIDR: "10.0.0.1"}
+	err := ext.enrichUsingCache(data, cache)
+	if err != nil {
+		t.Fatalf("enrichUsingCache: %v", err)
+	}
+
+	// Should have been populated from cache.
+	if data.RDAPName != "CachedName" {
+		t.Errorf("RDAPName: want %q, got %q", "CachedName", data.RDAPName)
+	}
+	if data.CountryCode != "DE" {
+		t.Errorf("CountryCode: want %q, got %q", "DE", data.CountryCode)
+	}
+}
+
+// -------------------------------------------------------
+// ScannerDataToCSVRow / CSVHeaders
+// -------------------------------------------------------
+
+func TestCSVHeaders_Length(t *testing.T) {
+	if len(models.CSVHeaders) != 35 {
+		t.Errorf("Expected 35 CSV headers, got %d", len(models.CSVHeaders))
+	}
+}
+
+func TestScannerDataToCSVRow_MatchesHeaders(t *testing.T) {
+	now := time.Now()
+	data := models.ScannerData{
+		ID:          "test_1",
+		IPOrCIDR:    "1.2.3.4",
+		ScannerName: "shodan",
+		ScannerType: models.ScannerTypeShodan,
+		Tags:        []string{"a", "b"},
+		LastSeen:    now,
+		FirstSeen:   now,
+		ExportDate:  now,
+	}
+
+	row := models.ScannerDataToCSVRow(data)
+	if len(row) != len(models.CSVHeaders) {
+		t.Errorf("Row length %d should match headers length %d", len(row), len(models.CSVHeaders))
+	}
+	if row[0] != "test_1" {
+		t.Errorf("First column (ID): want %q, got %q", "test_1", row[0])
+	}
+	if row[1] != "1.2.3.4" {
+		t.Errorf("Second column (IP): want %q, got %q", "1.2.3.4", row[1])
+	}
+}
+
+// -------------------------------------------------------
+// performRDAPFull with httptest (injectable endpoints)
+// -------------------------------------------------------
+
+func TestPerformRDAPFull_Success(t *testing.T) {
+	rdapJSON := `{
+		"name": "ACME-NET",
+		"handle": "NET-192-0-2-0-1",
+		"port43": "whois.arin.net",
+		"startAddress": "192.0.2.0",
+		"endAddress": "192.0.2.255",
+		"ipVersion": "v4",
+		"type": "DIRECT ALLOCATION",
+		"parentHandle": "NET-192-0-0-0-0",
+		"events": [
+			{"eventAction": "registration", "eventDate": "2020-01-01T00:00:00Z"},
+			{"eventAction": "last changed", "eventDate": "2023-06-15T12:00:00Z"}
+		],
+		"entities": [
+			{
+				"roles": ["abuse"],
+				"vcardArray": ["vcard", [
+					["fn", {}, "text", "ACME Abuse"],
+					["email", {}, "text", "abuse@acme.example"]
+				]]
+			},
+			{
+				"roles": ["technical"],
+				"vcardArray": ["vcard", [
+					["email", {}, "text", "tech@acme.example"]
+				]]
+			}
+		],
+		"network": {
+			"cidr0_cidrs": [{"v4prefix": "192.0.2.0", "length": 24}]
+		}
+	}`
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(rdapJSON))
+	}))
+	defer srv.Close()
+
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{LocalPath: dir, ResultsDir: filepath.Join(dir, "results")}
+	ext := NewExtractor(cfg, log)
+	ext.rdapEndpoints = []string{srv.URL + "/ip/"}
+
+	data := &models.ScannerData{IPOrCIDR: "192.0.2.1"}
+	err := ext.performRDAPFull("192.0.2.1", data)
+	if err != nil {
+		t.Fatalf("performRDAPFull: %v", err)
+	}
+
+	if data.RDAPName != "ACME-NET" {
+		t.Errorf("RDAPName: want %q, got %q", "ACME-NET", data.RDAPName)
+	}
+	if data.RDAPHandle != "NET-192-0-2-0-1" {
+		t.Errorf("RDAPHandle: want %q, got %q", "NET-192-0-2-0-1", data.RDAPHandle)
+	}
+	if data.StartAddress != "192.0.2.0" {
+		t.Errorf("StartAddress: want %q, got %q", "192.0.2.0", data.StartAddress)
+	}
+	if data.EndAddress != "192.0.2.255" {
+		t.Errorf("EndAddress: want %q, got %q", "192.0.2.255", data.EndAddress)
+	}
+	if data.IPVersion != "v4" {
+		t.Errorf("IPVersion: want %q, got %q", "v4", data.IPVersion)
+	}
+	if data.RDAPType != "DIRECT ALLOCATION" {
+		t.Errorf("RDAPType: want %q, got %q", "DIRECT ALLOCATION", data.RDAPType)
+	}
+	if data.ParentHandle != "NET-192-0-0-0-0" {
+		t.Errorf("ParentHandle: want %q, got %q", "NET-192-0-0-0-0", data.ParentHandle)
+	}
+	if data.EventRegistration != "2020-01-01T00:00:00Z" {
+		t.Errorf("EventRegistration: want %q, got %q", "2020-01-01T00:00:00Z", data.EventRegistration)
+	}
+	if data.EventLastChanged != "2023-06-15T12:00:00Z" {
+		t.Errorf("EventLastChanged: want %q, got %q", "2023-06-15T12:00:00Z", data.EventLastChanged)
+	}
+	if data.RDAPCIDR != "192.0.2.0/24" {
+		t.Errorf("RDAPCIDR: want %q, got %q", "192.0.2.0/24", data.RDAPCIDR)
+	}
+	if data.AbuseEmail != "abuse@acme.example" {
+		t.Errorf("AbuseEmail: want %q, got %q", "abuse@acme.example", data.AbuseEmail)
+	}
+	if data.TechEmail != "tech@acme.example" {
+		t.Errorf("TechEmail: want %q, got %q", "tech@acme.example", data.TechEmail)
+	}
+	if data.Organization != "ACME-NET" {
+		t.Errorf("Organization: want %q, got %q", "ACME-NET", data.Organization)
+	}
+	if data.Registry != "whois.arin.net" {
+		t.Errorf("Registry: want %q, got %q", "whois.arin.net", data.Registry)
+	}
+}
+
+func TestPerformRDAPFull_InvalidJSON(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("{not valid json"))
+	}))
+	defer srv.Close()
+
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{LocalPath: dir, ResultsDir: filepath.Join(dir, "results")}
+	ext := NewExtractor(cfg, log)
+	ext.rdapEndpoints = []string{srv.URL + "/ip/"}
+
+	data := &models.ScannerData{IPOrCIDR: "192.0.2.1"}
+	err := ext.performRDAPFull("192.0.2.1", data)
+	if err == nil {
+		t.Fatal("performRDAPFull should return error for invalid JSON")
+	}
+	if !strings.Contains(err.Error(), "no RDAP registry responded") {
+		t.Errorf("Expected 'no RDAP registry responded', got: %v", err)
+	}
+}
+
+func TestPerformRDAPFull_Server500(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
+	}))
+	defer srv.Close()
+
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{LocalPath: dir, ResultsDir: filepath.Join(dir, "results")}
+	ext := NewExtractor(cfg, log)
+	ext.rdapEndpoints = []string{srv.URL + "/ip/"}
+	// Use a short timeout to speed up the retry cycle.
+	ext.apiClient = &http.Client{Timeout: 1 * time.Second}
+
+	data := &models.ScannerData{IPOrCIDR: "192.0.2.1"}
+	err := ext.performRDAPFull("192.0.2.1", data)
+	if err == nil {
+		t.Fatal("performRDAPFull should return error for 500 responses")
+	}
+}
+
+// -------------------------------------------------------
+// performGeoLookupExtended with httptest
+// -------------------------------------------------------
+
+func TestPerformGeoLookupExtended_Success(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{
+			"status": "success",
+			"countryCode": "FR",
+			"country": "France",
+			"isp": "OVH SAS",
+			"as": "AS16276 OVH SAS",
+			"reverse": "ns1.ovh.net"
+		}`))
+	}))
+	defer srv.Close()
+
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{LocalPath: dir, ResultsDir: filepath.Join(dir, "results")}
+	ext := NewExtractor(cfg, log)
+	ext.geoBaseURL = srv.URL + "/json/"
+
+	cc, country, isp, asStr, reverse := ext.performGeoLookupExtended("1.2.3.4")
+
+	if cc != "FR" {
+		t.Errorf("countryCode: want %q, got %q", "FR", cc)
+	}
+	if country != "France" {
+		t.Errorf("country: want %q, got %q", "France", country)
+	}
+	if isp != "OVH SAS" {
+		t.Errorf("isp: want %q, got %q", "OVH SAS", isp)
+	}
+	if asStr != "AS16276 OVH SAS" {
+		t.Errorf("as: want %q, got %q", "AS16276 OVH SAS", asStr)
+	}
+	if reverse != "ns1.ovh.net" {
+		t.Errorf("reverse: want %q, got %q", "ns1.ovh.net", reverse)
+	}
+}
+
+func TestPerformGeoLookupExtended_FailStatus(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"status": "fail", "message": "reserved range"}`))
+	}))
+	defer srv.Close()
+
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{LocalPath: dir, ResultsDir: filepath.Join(dir, "results")}
+	ext := NewExtractor(cfg, log)
+	ext.geoBaseURL = srv.URL + "/json/"
+
+	cc, country, isp, asStr, reverse := ext.performGeoLookupExtended("10.0.0.1")
+
+	if cc != "" || country != "" || isp != "" || asStr != "" || reverse != "" {
+		t.Errorf("Expected all empty for fail status, got cc=%q country=%q isp=%q as=%q reverse=%q",
+			cc, country, isp, asStr, reverse)
+	}
+}
+
+func TestPerformGeoLookupExtended_ServerError(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
+	}))
+	defer srv.Close()
+
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{LocalPath: dir, ResultsDir: filepath.Join(dir, "results")}
+	ext := NewExtractor(cfg, log)
+	ext.geoBaseURL = srv.URL + "/json/"
+	ext.apiClient = &http.Client{Timeout: 1 * time.Second}
+
+	cc, country, isp, asStr, reverse := ext.performGeoLookupExtended("1.2.3.4")
+
+	if cc != "" || country != "" || isp != "" || asStr != "" || reverse != "" {
+		t.Errorf("Expected all empty for server error, got cc=%q country=%q isp=%q as=%q reverse=%q",
+			cc, country, isp, asStr, reverse)
+	}
+}
+
+// -------------------------------------------------------
+// GeoLookupContinent with httptest
+// -------------------------------------------------------
+
+func TestGeoLookupContinent_Success(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{
+			"status": "success",
+			"continent": "Europe",
+			"continentCode": "EU",
+			"country": "France",
+			"countryCode": "FR"
+		}`))
+	}))
+	defer srv.Close()
+
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{LocalPath: dir, ResultsDir: filepath.Join(dir, "results")}
+	ext := NewExtractor(cfg, log)
+	ext.geoBaseURL = srv.URL + "/json/"
+
+	continent, continentCode, country, countryCode, err := ext.GeoLookupContinent("1.2.3.4")
+	if err != nil {
+		t.Fatalf("GeoLookupContinent: %v", err)
+	}
+
+	if continent != "Europe" {
+		t.Errorf("continent: want %q, got %q", "Europe", continent)
+	}
+	if continentCode != "EU" {
+		t.Errorf("continentCode: want %q, got %q", "EU", continentCode)
+	}
+	if country != "France" {
+		t.Errorf("country: want %q, got %q", "France", country)
+	}
+	if countryCode != "FR" {
+		t.Errorf("countryCode: want %q, got %q", "FR", countryCode)
+	}
+}
+
+func TestGeoLookupContinent_FailStatus(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"status": "fail", "message": "reserved range"}`))
+	}))
+	defer srv.Close()
+
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{LocalPath: dir, ResultsDir: filepath.Join(dir, "results")}
+	ext := NewExtractor(cfg, log)
+	ext.geoBaseURL = srv.URL + "/json/"
+
+	_, _, _, _, err := ext.GeoLookupContinent("10.0.0.1")
+	if err == nil {
+		t.Fatal("GeoLookupContinent should return error for fail status")
+	}
+}
+
+func TestGeoLookupContinent_ServerError(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
+	}))
+	defer srv.Close()
+
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{LocalPath: dir, ResultsDir: filepath.Join(dir, "results")}
+	ext := NewExtractor(cfg, log)
+	ext.geoBaseURL = srv.URL + "/json/"
+	ext.apiClient = &http.Client{Timeout: 1 * time.Second}
+
+	_, _, _, _, err := ext.GeoLookupContinent("1.2.3.4")
+	if err == nil {
+		t.Fatal("GeoLookupContinent should return error for server error")
+	}
+}
+
+// -------------------------------------------------------
+// httpGetWithRetry
+// -------------------------------------------------------
+
+func TestHttpGetWithRetry_Success(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("ok"))
+	}))
+	defer srv.Close()
+
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{LocalPath: dir}
+	ext := NewExtractor(cfg, log)
+	ext.apiClient = srv.Client()
+
+	resp, err := ext.httpGetWithRetry(srv.URL)
+	if err != nil {
+		t.Fatalf("httpGetWithRetry: %v", err)
+	}
+	resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		t.Errorf("StatusCode: want 200, got %d", resp.StatusCode)
+	}
+}
+
+func TestHttpGetWithRetry_RetriesOn5xx(t *testing.T) {
+	attempts := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		attempts++
+		if attempts <= 2 {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("ok"))
+	}))
+	defer srv.Close()
+
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{LocalPath: dir}
+	ext := NewExtractor(cfg, log)
+	ext.apiClient = srv.Client()
+
+	resp, err := ext.httpGetWithRetry(srv.URL)
+	if err != nil {
+		t.Fatalf("httpGetWithRetry should succeed after retries: %v", err)
+	}
+	resp.Body.Close()
+
+	if attempts != 3 {
+		t.Errorf("Expected 3 attempts (2 failures + 1 success), got %d", attempts)
+	}
+}
+
+func TestHttpGetWithRetry_Returns4xxWithoutRetry(t *testing.T) {
+	attempts := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		attempts++
+		w.WriteHeader(http.StatusNotFound)
+	}))
+	defer srv.Close()
+
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{LocalPath: dir}
+	ext := NewExtractor(cfg, log)
+	ext.apiClient = srv.Client()
+
+	resp, err := ext.httpGetWithRetry(srv.URL)
+	if err != nil {
+		t.Fatalf("httpGetWithRetry should not error for 404: %v", err)
+	}
+	resp.Body.Close()
+
+	if attempts != 1 {
+		t.Errorf("4xx should not be retried, expected 1 attempt, got %d", attempts)
+	}
+	if resp.StatusCode != http.StatusNotFound {
+		t.Errorf("StatusCode: want 404, got %d", resp.StatusCode)
+	}
+}
+
+func TestHttpGetWithRetry_RetriesOn429(t *testing.T) {
+	attempts := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		attempts++
+		if attempts <= 1 {
+			w.Header().Set("Retry-After", "0")
+			w.WriteHeader(http.StatusTooManyRequests)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("ok"))
+	}))
+	defer srv.Close()
+
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{LocalPath: dir}
+	ext := NewExtractor(cfg, log)
+	ext.apiClient = srv.Client()
+
+	resp, err := ext.httpGetWithRetry(srv.URL)
+	if err != nil {
+		t.Fatalf("httpGetWithRetry should succeed after 429 retry: %v", err)
+	}
+	resp.Body.Close()
+
+	if attempts != 2 {
+		t.Errorf("Expected 2 attempts (1 x 429 + 1 success), got %d", attempts)
+	}
+}
+
+func TestHttpGetWithRetry_AllRetriesFail(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusServiceUnavailable)
+	}))
+	defer srv.Close()
+
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{LocalPath: dir}
+	ext := NewExtractor(cfg, log)
+	ext.apiClient = srv.Client()
+
+	_, err := ext.httpGetWithRetry(srv.URL)
+	if err == nil {
+		t.Fatal("httpGetWithRetry should return error when all retries fail")
+	}
+	if !strings.Contains(err.Error(), "after") {
+		t.Errorf("Error should mention retries, got: %v", err)
+	}
+}
+
+// -------------------------------------------------------
+// enrichData with worker pool
+// -------------------------------------------------------
+
+func TestEnrichData_WorkerPool(t *testing.T) {
+	// Set up RDAP and Geo mock servers.
+	rdapSrv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"name": "TestNet", "handle": "HANDLE-1", "startAddress": "10.0.0.0", "endAddress": "10.0.0.255"}`))
+	}))
+	defer rdapSrv.Close()
+
+	geoSrv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"status": "success", "countryCode": "US", "country": "United States", "isp": "TestISP", "as": "AS1234 TestAS", "reverse": "test.example.com"}`))
+	}))
+	defer geoSrv.Close()
+
+	dir := t.TempDir()
+
+	// Create .nft files.
+	nft := filepath.Join(dir, "shodan.nft")
+	if err := os.WriteFile(nft, []byte("10.0.0.1\n10.0.0.2\n10.0.0.3\n"), 0644); err != nil {
+		t.Fatalf("WriteFile: %v", err)
+	}
+
+	// Change to temp dir so cache files are written there.
+	origDir, _ := os.Getwd()
+	if err := os.Chdir(dir); err != nil {
+		t.Fatalf("Chdir: %v", err)
+	}
+	defer func() { _ = os.Chdir(origDir) }()
+
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{
+		LocalPath:   dir,
+		ResultsDir:  filepath.Join(dir, "results"),
+		Parallelism: 2,
+	}
+	ext := NewExtractor(cfg, log)
+	ext.rdapEndpoints = []string{rdapSrv.URL + "/ip/"}
+	ext.geoBaseURL = geoSrv.URL + "/json/"
+
+	ips := []string{"10.0.0.1", "10.0.0.2", "10.0.0.3"}
+	results, err := ext.enrichData(ips)
+	if err != nil {
+		t.Fatalf("enrichData: %v", err)
+	}
+
+	if len(results) != 3 {
+		t.Fatalf("Expected 3 results, got %d", len(results))
+	}
+
+	for i, r := range results {
+		if r.RDAPName != "TestNet" {
+			t.Errorf("results[%d].RDAPName: want %q, got %q", i, "TestNet", r.RDAPName)
+		}
+		if r.CountryCode != "US" {
+			t.Errorf("results[%d].CountryCode: want %q, got %q", i, "US", r.CountryCode)
+		}
+		if r.ISP != "TestISP" {
+			t.Errorf("results[%d].ISP: want %q, got %q", i, "TestISP", r.ISP)
+		}
+		if r.ASN != "AS1234 TestAS" {
+			t.Errorf("results[%d].ASN: want %q, got %q", i, "AS1234 TestAS", r.ASN)
+		}
+		if r.ASName != "TestAS" {
+			t.Errorf("results[%d].ASName: want %q, got %q", i, "TestAS", r.ASName)
+		}
+	}
+}
+
+func TestEnrichData_SequentialMode(t *testing.T) {
+	rdapSrv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"name": "SeqNet"}`))
+	}))
+	defer rdapSrv.Close()
+
+	geoSrv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"status": "success", "countryCode": "DE", "country": "Germany", "isp": "Hetzner", "as": "", "reverse": ""}`))
+	}))
+	defer geoSrv.Close()
+
+	dir := t.TempDir()
+	nft := filepath.Join(dir, "censys.nft")
+	if err := os.WriteFile(nft, []byte("10.0.0.1\n10.0.0.2\n"), 0644); err != nil {
+		t.Fatalf("WriteFile: %v", err)
+	}
+
+	origDir, _ := os.Getwd()
+	if err := os.Chdir(dir); err != nil {
+		t.Fatalf("Chdir: %v", err)
+	}
+	defer func() { _ = os.Chdir(origDir) }()
+
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{
+		LocalPath:   dir,
+		ResultsDir:  filepath.Join(dir, "results"),
+		Parallelism: 1, // Sequential.
+	}
+	ext := NewExtractor(cfg, log)
+	ext.rdapEndpoints = []string{rdapSrv.URL + "/ip/"}
+	ext.geoBaseURL = geoSrv.URL + "/json/"
+
+	results, err := ext.enrichData([]string{"10.0.0.1", "10.0.0.2"})
+	if err != nil {
+		t.Fatalf("enrichData: %v", err)
+	}
+
+	if len(results) != 2 {
+		t.Fatalf("Expected 2 results, got %d", len(results))
+	}
+
+	for i, r := range results {
+		if r.RDAPName != "SeqNet" {
+			t.Errorf("results[%d].RDAPName: want %q, got %q", i, "SeqNet", r.RDAPName)
+		}
+		if r.CountryCode != "DE" {
+			t.Errorf("results[%d].CountryCode: want %q, got %q", i, "DE", r.CountryCode)
+		}
+	}
+}
+
+// -------------------------------------------------------
+// retryDelay / retryAfterDelay
+// -------------------------------------------------------
+
+func TestRetryDelay_ExponentialGrowth(t *testing.T) {
+	d0 := retryDelay(0)
+	d1 := retryDelay(1)
+	d2 := retryDelay(2)
+
+	// With jitter, d1 should be roughly 2x d0 (within tolerance).
+	// Base: 500ms, 1000ms, 2000ms + up to 25% jitter.
+	if d0 < 500*time.Millisecond || d0 > 625*time.Millisecond {
+		t.Errorf("retryDelay(0) should be 500-625ms, got %v", d0)
+	}
+	if d1 < 1000*time.Millisecond || d1 > 1250*time.Millisecond {
+		t.Errorf("retryDelay(1) should be 1000-1250ms, got %v", d1)
+	}
+	if d2 < 2000*time.Millisecond || d2 > 2500*time.Millisecond {
+		t.Errorf("retryDelay(2) should be 2000-2500ms, got %v", d2)
+	}
+}
+
+func TestRetryDelay_CapsAtMaxDelay(t *testing.T) {
+	d := retryDelay(100) // Very high attempt.
+	// Should be capped at retryMaxDelay (10s) + up to 25% jitter.
+	if d > 12500*time.Millisecond {
+		t.Errorf("retryDelay(100) should be capped, got %v", d)
+	}
+}
+
+// -------------------------------------------------------
+// safeRDAPCache (concurrent access)
+// -------------------------------------------------------
+
+func TestSafeRDAPCache_ConcurrentAccess(t *testing.T) {
+	cache := &rdapCache{
+		Entries: map[string]models.RDAPCacheEntry{},
+		Path:    filepath.Join(t.TempDir(), "cache.json"),
+	}
+	sc := newSafeRDAPCache(cache)
+
+	done := make(chan bool, 10)
+	for i := 0; i < 10; i++ {
+		go func(id int) {
+			ip := strings.Replace("10.0.0.X", "X", strings.Repeat("1", id%9+1), 1)
+			data := &models.ScannerData{
+				IPOrCIDR: ip,
+				RDAPName: "Worker" + strings.Repeat("1", id%9+1),
+			}
+			sc.updateCache(ip, data)
+			sc.applyCache(ip, &models.ScannerData{IPOrCIDR: ip})
+			done <- true
+		}(i)
+	}
+
+	for i := 0; i < 10; i++ {
+		<-done
+	}
+
+	// No race condition, no panic = success.
+}
+
+// -------------------------------------------------------
+// enrichUsingCache (safeRDAPCache)
+// -------------------------------------------------------
+
+func TestEnrichUsingCache_SafeCache_CacheHit(t *testing.T) {
+	dir := t.TempDir()
+	ext := newTestExtractor(t, dir)
+
+	cache := &rdapCache{
+		Entries: map[string]models.RDAPCacheEntry{
+			"10.0.0.1": {
+				RDAPName:    "SafeCachedName",
+				CountryCode: "JP",
+				CountryName: "Japan",
+			},
+		},
+		Path: filepath.Join(dir, "cache.json"),
+	}
+	sc := newSafeRDAPCache(cache)
+
+	data := &models.ScannerData{IPOrCIDR: "10.0.0.1"}
+	err := ext.enrichUsingCache(data, sc)
+	if err != nil {
+		t.Fatalf("enrichUsingCache via safeRDAPCache: %v", err)
+	}
+
+	if data.RDAPName != "SafeCachedName" {
+		t.Errorf("RDAPName: want %q, got %q", "SafeCachedName", data.RDAPName)
+	}
+	if data.CountryCode != "JP" {
+		t.Errorf("CountryCode: want %q, got %q", "JP", data.CountryCode)
+	}
+}
+
+// -------------------------------------------------------
+// retryAfterDelay edge cases
+// -------------------------------------------------------
+
+func TestRetryAfterDelay_SecondsHeader(t *testing.T) {
+	resp := &http.Response{
+		Header: http.Header{"Retry-After": []string{"5"}},
+	}
+	d := retryAfterDelay(resp)
+	if d != 5*time.Second {
+		t.Errorf("Expected 5s, got %v", d)
+	}
+}
+
+func TestRetryAfterDelay_HTTPDateHeader(t *testing.T) {
+	futureTime := time.Now().Add(10 * time.Second)
+	resp := &http.Response{
+		Header: http.Header{"Retry-After": []string{futureTime.UTC().Format(http.TimeFormat)}},
+	}
+	d := retryAfterDelay(resp)
+	// Should be roughly 10 seconds (allow tolerance).
+	if d < 8*time.Second || d > 12*time.Second {
+		t.Errorf("Expected ~10s, got %v", d)
+	}
+}
+
+func TestRetryAfterDelay_EmptyHeader(t *testing.T) {
+	resp := &http.Response{
+		Header: http.Header{},
+	}
+	d := retryAfterDelay(resp)
+	if d != 0 {
+		t.Errorf("Expected 0 for empty header, got %v", d)
+	}
+}
+
+func TestRetryAfterDelay_InvalidHeader(t *testing.T) {
+	resp := &http.Response{
+		Header: http.Header{"Retry-After": []string{"garbage"}},
+	}
+	d := retryAfterDelay(resp)
+	if d != 0 {
+		t.Errorf("Expected 0 for garbage header, got %v", d)
+	}
+}
+
+func TestRetryAfterDelay_PastHTTPDate(t *testing.T) {
+	pastTime := time.Now().Add(-10 * time.Second)
+	resp := &http.Response{
+		Header: http.Header{"Retry-After": []string{pastTime.UTC().Format(http.TimeFormat)}},
+	}
+	d := retryAfterDelay(resp)
+	// Past date should return 0 (negative duration is not useful).
+	if d != 0 {
+		t.Errorf("Expected 0 for past date, got %v", d)
+	}
+}
+
+// -------------------------------------------------------
+// SaveToJSON / SaveToCSV error paths
+// -------------------------------------------------------
+
+func TestSaveToJSON_ErrorOnInvalidDir(t *testing.T) {
+	dir := t.TempDir()
+	ext := newTestExtractor(t, dir)
+	ext.config.ResultsDir = "/nonexistent/deeply/nested/path"
+
+	err := ext.SaveToJSON([]models.ScannerData{{IPOrCIDR: "1.2.3.4"}}, "test.json")
+	if err == nil {
+		t.Error("Expected error for invalid results directory")
+	}
+}
+
+func TestSaveToCSV_ErrorOnInvalidDir(t *testing.T) {
+	dir := t.TempDir()
+	ext := newTestExtractor(t, dir)
+	ext.config.ResultsDir = "/nonexistent/deeply/nested/path"
+
+	err := ext.SaveToCSV([]models.ScannerData{{IPOrCIDR: "1.2.3.4"}}, "test.csv")
+	if err == nil {
+		t.Error("Expected error for invalid results directory")
+	}
+}
+
+// -------------------------------------------------------
+// LoadFromJSON error paths
+// -------------------------------------------------------
+
+func TestLoadFromJSON_InvalidJSON(t *testing.T) {
+	dir := t.TempDir()
+	ext := newTestExtractor(t, dir)
+
+	// Write invalid JSON to results dir.
+	resultsDir := filepath.Join(dir, "results")
+	_ = os.MkdirAll(resultsDir, 0755)
+	ext.config.ResultsDir = resultsDir
+	if err := os.WriteFile(filepath.Join(resultsDir, "bad.json"), []byte("{bad json"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	_, err := ext.LoadFromJSON("bad.json")
+	if err == nil {
+		t.Error("Expected error for invalid JSON")
+	}
+}
+
+func TestLoadFromJSON_FileNotFound(t *testing.T) {
+	dir := t.TempDir()
+	ext := newTestExtractor(t, dir)
+	ext.config.ResultsDir = filepath.Join(dir, "results")
+
+	_, err := ext.LoadFromJSON("nonexistent.json")
+	if err == nil {
+		t.Error("Expected error for missing file")
+	}
+}
+
+// -------------------------------------------------------
+// EnrichRecordWithDelay
+// -------------------------------------------------------
+
+func TestEnrichRecordWithDelay_RestoresThrottle(t *testing.T) {
+	// Mock RDAP + geo servers.
+	rdapSrv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, `{"name":"TestNet","handle":"NET-1"}`)
+	}))
+	defer rdapSrv.Close()
+
+	geoSrv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, `{"status":"success","countryCode":"US","country":"United States","isp":"TestISP","as":"AS123","reverse":"test.com"}`)
+	}))
+	defer geoSrv.Close()
+
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	cfg := models.DatabaseConfig{
+		LocalPath:   dir,
+		ResultsDir:  filepath.Join(dir, "results"),
+		APIThrottle: 0.5,
+	}
+	ext := NewExtractor(cfg, log)
+	ext.rdapEndpoints = []string{rdapSrv.URL + "/ip/"}
+	ext.geoBaseURL = geoSrv.URL + "/"
+	ext.apiClient = &http.Client{Timeout: 2 * time.Second}
+
+	data := &models.ScannerData{IPOrCIDR: "10.0.0.1"}
+	err := ext.EnrichRecordWithDelay(data, 100)
+	if err != nil {
+		t.Fatalf("EnrichRecordWithDelay: %v", err)
+	}
+
+	// Verify throttle was restored.
+	if ext.config.APIThrottle != 0.5 {
+		t.Errorf("APIThrottle should be restored to 0.5, got %f", ext.config.APIThrottle)
+	}
+
+	// Verify some enrichment happened.
+	if data.CountryCode != "US" {
+		t.Errorf("CountryCode: want %q, got %q", "US", data.CountryCode)
+	}
+}
+
+// -------------------------------------------------------
+// enrichWithAPI (single-record, loads+saves cache)
+// -------------------------------------------------------
+
+func TestEnrichWithAPI_EnrichesAndPersistsCache(t *testing.T) {
+	rdapSrv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, `{"name":"APINet","handle":"API-1"}`)
+	}))
+	defer rdapSrv.Close()
+
+	geoSrv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, `{"status":"success","countryCode":"DE","country":"Germany","isp":"TestISP","as":"AS456 TestAS","reverse":"api.example.com"}`)
+	}))
+	defer geoSrv.Close()
+
+	dir := t.TempDir()
+	log := logger.NewLogger()
+	// Set up build/data dir for cache file.
+	buildDataDir := filepath.Join(dir, "build", "data")
+	_ = os.MkdirAll(buildDataDir, 0755)
+
+	origDir, _ := os.Getwd()
+	if err := os.Chdir(dir); err != nil {
+		t.Fatal(err)
+	}
+	defer func() { _ = os.Chdir(origDir) }()
+
+	cfg := models.DatabaseConfig{
+		LocalPath:  dir,
+		ResultsDir: filepath.Join(dir, "results"),
+	}
+	ext := NewExtractor(cfg, log)
+	ext.rdapEndpoints = []string{rdapSrv.URL + "/ip/"}
+	ext.geoBaseURL = geoSrv.URL + "/"
+	ext.apiClient = &http.Client{Timeout: 2 * time.Second}
+
+	data := &models.ScannerData{IPOrCIDR: "10.0.0.1"}
+	err := ext.enrichWithAPI(data)
+	if err != nil {
+		t.Fatalf("enrichWithAPI: %v", err)
+	}
+
+	if data.RDAPName != "APINet" {
+		t.Errorf("RDAPName: want %q, got %q", "APINet", data.RDAPName)
+	}
+	if data.CountryCode != "DE" {
+		t.Errorf("CountryCode: want %q, got %q", "DE", data.CountryCode)
+	}
+	if data.ASName != "TestAS" {
+		t.Errorf("ASName: want %q, got %q", "TestAS", data.ASName)
+	}
+
+	// Verify cache was persisted to disk.
+	cacheData, err := os.ReadFile(filepath.Join(buildDataDir, "rdap_cache.json"))
+	if err != nil {
+		t.Fatalf("Cache file should exist: %v", err)
+	}
+	if !strings.Contains(string(cacheData), "10.0.0.1") {
+		t.Error("Cache file should contain entry for 10.0.0.1")
+	}
+}
+
+// -------------------------------------------------------
+// cacheAccessor interface compliance
+// -------------------------------------------------------
+
+func TestCacheAccessor_InterfaceCompliance(t *testing.T) {
+	// Verify both types implement cacheAccessor.
+	var _ cacheAccessor = &rdapCache{Entries: map[string]models.RDAPCacheEntry{}}
+	var _ cacheAccessor = newSafeRDAPCache(&rdapCache{Entries: map[string]models.RDAPCacheEntry{}})
 }

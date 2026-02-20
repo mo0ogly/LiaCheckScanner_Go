@@ -20,6 +20,10 @@ type ScannerInfo struct {
 func (e *Extractor) mapIPsToScanners(ips []string) map[string]ScannerInfo {
 	ipToScanner := make(map[string]ScannerInfo)
 
+	// Precompile regexes once before walking the filesystem.
+	ipv4Regex := regexp.MustCompile(`\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}(?:/\d{1,2})?\b`)
+	ipv6Regex := regexp.MustCompile(`(?:[a-fA-F0-9]{0,4}:){2,7}[a-fA-F0-9]{0,4}(?:/\d{1,3})?`)
+
 	err := filepath.Walk(e.config.LocalPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -33,9 +37,7 @@ func (e *Extractor) mapIPsToScanners(ips []string) map[string]ScannerInfo {
 		scannerName := strings.TrimSuffix(fileName, ".nft")
 		scannerType := e.getScannerType(scannerName)
 
-		fileIPs, err := e.extractIPsFromNFTFile(path,
-			regexp.MustCompile(`\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}(?:/\d{1,2})?\b`),
-			regexp.MustCompile(`(?:[a-fA-F0-9]{0,4}:){2,7}[a-fA-F0-9]{0,4}(?:/\d{1,3})?`))
+		fileIPs, err := e.extractIPsFromNFTFile(path, ipv4Regex, ipv6Regex)
 		if err != nil {
 			return nil
 		}

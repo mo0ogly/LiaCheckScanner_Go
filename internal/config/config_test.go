@@ -43,11 +43,12 @@ func TestLoad_MissingFile_CreatesDefaults(t *testing.T) {
 	assertString(t, "LogLevel", "INFO", cfg.LogLevel)
 	assertInt(t, "MaxLogSize", 10, cfg.MaxLogSize)
 	assertInt(t, "LogBackups", 5, cfg.LogBackups)
-	assertString(t, "Database.RepoURL", "https://github.com/six2dez/reconftw", cfg.Database.RepoURL)
-	assertString(t, "Database.LocalPath", "./data/repository", cfg.Database.LocalPath)
+	assertString(t, "Database.RepoURL", "https://github.com/MDMCK10/internet-scanners", cfg.Database.RepoURL)
+	assertString(t, "Database.LocalPath", "./data/internet-scanners", cfg.Database.LocalPath)
 	assertString(t, "Database.ResultsDir", "./results", cfg.Database.ResultsDir)
 	assertString(t, "Database.LogsDir", "./logs", cfg.Database.LogsDir)
 	assertFloat(t, "Database.APIThrottle", 1.0, cfg.Database.APIThrottle)
+	assertInt(t, "Database.Parallelism", 4, cfg.Database.Parallelism)
 	assertInt(t, "Database.UpdateInterval", 24, cfg.Database.UpdateInterval)
 
 	if cfg.Database.EnableAPI {
@@ -448,7 +449,7 @@ func TestValidate_InvalidLogLevel(t *testing.T) {
 }
 
 func TestValidate_ValidLogLevels(t *testing.T) {
-	for _, level := range []string{"DEBUG", "INFO", "WARNING", "ERROR", "debug", "info", "warning", "error"} {
+	for _, level := range []string{"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL", "debug", "info", "warning", "error", "critical"} {
 		cfg := &models.AppConfig{
 			AppName:    "TestApp",
 			Version:    "1.0.0",

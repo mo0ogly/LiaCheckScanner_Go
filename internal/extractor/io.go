@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/lia/liacheckscanner_go/internal/models"
 )
@@ -55,60 +54,12 @@ func (e *Extractor) SaveToCSV(data []models.ScannerData, filename string) error 
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
 
-	headers := []string{
-		"ID", "IP/CIDR", "Scanner Name", "Scanner Type", "Source File",
-		"Country Code", "Country Name", "ISP", "Organization",
-		"RDAP Name", "RDAP Handle", "RDAP CIDR", "RDAP Registry",
-		"Start Address", "End Address", "IP Version", "RDAP Type", "Parent Handle",
-		"Event Registration", "Event Last Changed",
-		"ASN", "AS Name", "Reverse DNS",
-		"Abuse Confidence Score", "Abuse Reports", "Usage Type",
-		"Domain", "Last Seen", "First Seen", "Tags", "Notes",
-		"Risk Level", "Export Date", "Abuse Email", "Tech Email",
-	}
-	if err := writer.Write(headers); err != nil {
+	if err := writer.Write(models.CSVHeaders); err != nil {
 		return fmt.Errorf("writing CSV headers: %w", err)
 	}
 
 	for _, item := range data {
-		row := []string{
-			item.ID,
-			item.IPOrCIDR,
-			item.ScannerName,
-			string(item.ScannerType),
-			item.SourceFile,
-			item.CountryCode,
-			item.CountryName,
-			item.ISP,
-			item.Organization,
-			item.RDAPName,
-			item.RDAPHandle,
-			item.RDAPCIDR,
-			item.Registry,
-			item.StartAddress,
-			item.EndAddress,
-			item.IPVersion,
-			item.RDAPType,
-			item.ParentHandle,
-			item.EventRegistration,
-			item.EventLastChanged,
-			item.ASN,
-			item.ASName,
-			item.ReverseDNS,
-			fmt.Sprintf("%d", item.AbuseConfidenceScore),
-			fmt.Sprintf("%d", item.AbuseReports),
-			item.UsageType,
-			item.Domain,
-			item.LastSeen.Format("2006-01-02 15:04:05"),
-			item.FirstSeen.Format("2006-01-02 15:04:05"),
-			strings.Join(item.Tags, ", "),
-			item.Notes,
-			item.RiskLevel,
-			item.ExportDate.Format("2006-01-02 15:04:05"),
-			item.AbuseEmail,
-			item.TechEmail,
-		}
-		if err := writer.Write(row); err != nil {
+		if err := writer.Write(models.ScannerDataToCSVRow(item)); err != nil {
 			return fmt.Errorf("writing CSV row for %s: %w", item.ID, err)
 		}
 	}

@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+	"strings"
 	"time"
 )
 
@@ -96,14 +98,15 @@ type RDAPCacheEntry struct {
 
 // RDAPProgressTracker tracks the state of a batch RDAP enrichment process, enabling resume after interruption.
 type RDAPProgressTracker struct {
-	TotalRecords     int      `json:"total_records"`
-	ProcessedRecords int      `json:"processed_records"`
-	ProcessedIPs     []string `json:"processed_ips"`
-	StartedAt        string   `json:"started_at"`
-	LastUpdatedAt    string   `json:"last_updated_at"`
-	Workers          int      `json:"workers"`
-	Throttle         float64  `json:"throttle"`
-	Completed        bool     `json:"completed"`
+	TotalRecords     int                    `json:"total_records"`
+	ProcessedRecords int                    `json:"processed_records"`
+	ProcessedIPs     []string               `json:"processed_ips"`
+	ProcessedIPSet   map[string]struct{}    `json:"-"` // derived from ProcessedIPs for O(1) lookup
+	StartedAt        string                 `json:"started_at"`
+	LastUpdatedAt    string                 `json:"last_updated_at"`
+	Workers          int                    `json:"workers"`
+	Throttle         float64                `json:"throttle"`
+	Completed        bool                   `json:"completed"`
 }
 
 // DatabaseConfig holds settings for repository access, API configuration, and data storage paths.
@@ -145,6 +148,60 @@ type SearchFilter struct {
 	RiskLevel   string      `json:"risk_level"`
 	DateFrom    time.Time   `json:"date_from"`
 	DateTo      time.Time   `json:"date_to"`
+}
+
+// CSVHeaders defines the canonical column headers for CSV export of ScannerData.
+var CSVHeaders = []string{
+	"ID", "IP/CIDR", "Scanner Name", "Scanner Type", "Source File",
+	"Country Code", "Country Name", "ISP", "Organization",
+	"RDAP Name", "RDAP Handle", "RDAP CIDR", "RDAP Registry",
+	"Start Address", "End Address", "IP Version", "RDAP Type", "Parent Handle",
+	"Event Registration", "Event Last Changed",
+	"ASN", "AS Name", "Reverse DNS",
+	"Abuse Confidence Score", "Abuse Reports", "Usage Type",
+	"Domain", "Last Seen", "First Seen", "Tags", "Notes",
+	"Risk Level", "Export Date", "Abuse Email", "Tech Email",
+}
+
+// ScannerDataToCSVRow converts a ScannerData record to a CSV row matching CSVHeaders order.
+func ScannerDataToCSVRow(item ScannerData) []string {
+	return []string{
+		item.ID,
+		item.IPOrCIDR,
+		item.ScannerName,
+		string(item.ScannerType),
+		item.SourceFile,
+		item.CountryCode,
+		item.CountryName,
+		item.ISP,
+		item.Organization,
+		item.RDAPName,
+		item.RDAPHandle,
+		item.RDAPCIDR,
+		item.Registry,
+		item.StartAddress,
+		item.EndAddress,
+		item.IPVersion,
+		item.RDAPType,
+		item.ParentHandle,
+		item.EventRegistration,
+		item.EventLastChanged,
+		item.ASN,
+		item.ASName,
+		item.ReverseDNS,
+		fmt.Sprintf("%d", item.AbuseConfidenceScore),
+		fmt.Sprintf("%d", item.AbuseReports),
+		item.UsageType,
+		item.Domain,
+		item.LastSeen.Format("2006-01-02 15:04:05"),
+		item.FirstSeen.Format("2006-01-02 15:04:05"),
+		strings.Join(item.Tags, ", "),
+		item.Notes,
+		item.RiskLevel,
+		item.ExportDate.Format("2006-01-02 15:04:05"),
+		item.AbuseEmail,
+		item.TechEmail,
+	}
 }
 
 // LogLevel represents the severity level of a log entry.

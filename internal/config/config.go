@@ -50,13 +50,14 @@ func (cm *ConfigManager) Load() (*models.AppConfig, error) {
 		MaxLogSize: 10, // MB
 		LogBackups: 5,
 		Database: models.DatabaseConfig{
-			RepoURL:        "https://github.com/six2dez/reconftw",
-			LocalPath:      "./data/repository",
+			RepoURL:        "https://github.com/MDMCK10/internet-scanners",
+			LocalPath:      "./data/internet-scanners",
 			ResultsDir:     "./results",
 			LogsDir:        "./logs",
 			APIKey:         "",
 			EnableAPI:      false,
 			APIThrottle:    1.0,
+			Parallelism:    4,
 			AutoUpdate:     false,
 			UpdateInterval: 24,  // heures
 			CacheTTLHours:  168, // 7 days
@@ -192,7 +193,7 @@ func Validate(cfg *models.AppConfig) error {
 	}
 
 	switch strings.ToUpper(cfg.LogLevel) {
-	case "DEBUG", "INFO", "WARNING", "ERROR":
+	case "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL":
 		// valid
 	default:
 		return fmt.Errorf("LogLevel must be one of DEBUG, INFO, WARNING, ERROR; got %q", cfg.LogLevel)

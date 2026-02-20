@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 	"sync"
 	"time"
 
@@ -246,10 +247,42 @@ func (l *Logger) checkRotation() {
 	l.cleanupOldLogs(logsDir)
 }
 
-// cleanupOldLogs nettoie les anciens fichiers de log
+// cleanupOldLogs removes old log files beyond the configured backup count.
 func (l *Logger) cleanupOldLogs(logsDir string) {
-	// Cette fonction pourrait être implémentée pour supprimer les anciens fichiers
-	// selon le nombre de backups configuré
+	if l.backups <= 0 {
+		return
+	}
+
+	entries, err := os.ReadDir(logsDir)
+	if err != nil {
+		return
+	}
+
+	var logFiles []string
+	for _, entry := range entries {
+		if !entry.IsDir() && filepath.Ext(entry.Name()) == ".log" {
+			logFiles = append(logFiles, filepath.Join(logsDir, entry.Name()))
+		}
+	}
+
+	// Sort by modification time (oldest first).
+	sort.Slice(logFiles, func(i, j int) bool {
+		infoI, errI := os.Stat(logFiles[i])
+		infoJ, errJ := os.Stat(logFiles[j])
+		if errI != nil || errJ != nil {
+			return false
+		}
+		return infoI.ModTime().Before(infoJ.ModTime())
+	})
+
+	// Remove oldest files if we exceed the backup limit.
+	// Keep backups + 1 (the current file counts too).
+	maxFiles := l.backups + 1
+	if len(logFiles) > maxFiles {
+		for _, f := range logFiles[:len(logFiles)-maxFiles] {
+			os.Remove(f)
+		}
+	}
 }
 
 // Close closes the underlying log file and releases resources.

@@ -18,6 +18,11 @@ type Extractor struct {
 	config      models.DatabaseConfig
 	apiClient   *http.Client
 	rateLimiter *RateLimiter
+
+	// rdapEndpoints overrides the default RDAP registry URLs (for testing).
+	rdapEndpoints []string
+	// geoBaseURL overrides the default ip-api.com base URL (for testing).
+	geoBaseURL string
 }
 
 // NewExtractor creates a new Extractor with the given database configuration and logger.
@@ -42,40 +47,14 @@ func NewExtractor(config models.DatabaseConfig, logger *logger.Logger) *Extracto
 func (e *Extractor) ExtractData() ([]models.ScannerData, error) {
 	e.logger.Info("Extractor", "Debut de l'extraction des donnees")
 
-	// Use repository settings from configuration
-	repoURL := e.config.RepoURL
-	if repoURL == "" {
-		repoURL = "https://github.com/MDMCK10/internet-scanners"
+	if err := e.cloneOrUpdateRepo(); err != nil {
+		return nil, err
 	}
+
 	localPath := e.config.LocalPath
 	if localPath == "" {
 		localPath = "./data/internet-scanners"
 	}
-
-	e.logger.Info("Extractor", "Clonage/mise a jour du repository...")
-	e.logger.Info("Extractor", "Repository: "+repoURL)
-	e.logger.Info("Extractor", "Local Path: "+localPath)
-
-	// Verifier si le repository local existe
-	if _, err := os.Stat(localPath); os.IsNotExist(err) {
-		e.logger.Info("Extractor", "Clonage du repository depuis "+repoURL)
-		cmd := exec.Command("git", "clone", repoURL, localPath)
-		if err := cmd.Run(); err != nil {
-			e.logger.Error("Extractor", "Erreur lors du clonage: "+err.Error())
-			return nil, fmt.Errorf("git clone failed: %w", err)
-		}
-	} else {
-		e.logger.Info("Extractor", "Repository local trouve, mise a jour...")
-		cmd := exec.Command("git", "-C", localPath, "pull")
-		if err := cmd.Run(); err != nil {
-			e.logger.Error("Extractor", "Erreur lors de la mise a jour: "+err.Error())
-			return nil, fmt.Errorf("git pull failed: %w", err)
-		}
-	}
-
-	e.logger.Info("Extractor", "Repository synchronise")
-	e.logger.Info("Extractor", "Parsing des fichiers pour extraire les IPs...")
-	e.logger.Info("Extractor", "Parsing du repertoire: "+localPath)
 
 	scanners, err := e.parseFilesForIPs(localPath)
 	if err != nil {
@@ -113,25 +92,13 @@ func (e *Extractor) ExtractData() ([]models.ScannerData, error) {
 // ExtractIPsOnly clones or updates the repository and parses .nft files,
 // returning only the unique IP list without performing any enrichment.
 func (e *Extractor) ExtractIPsOnly() ([]string, error) {
-	repoURL := e.config.RepoURL
-	if repoURL == "" {
-		repoURL = "https://github.com/MDMCK10/internet-scanners"
+	if err := e.cloneOrUpdateRepo(); err != nil {
+		return nil, err
 	}
+
 	localPath := e.config.LocalPath
 	if localPath == "" {
 		localPath = "./data/internet-scanners"
-	}
-
-	if _, err := os.Stat(localPath); os.IsNotExist(err) {
-		cmd := exec.Command("git", "clone", repoURL, localPath)
-		if err := cmd.Run(); err != nil {
-			return nil, fmt.Errorf("git clone failed: %w", err)
-		}
-	} else {
-		cmd := exec.Command("git", "-C", localPath, "pull")
-		if err := cmd.Run(); err != nil {
-			return nil, fmt.Errorf("git pull failed: %w", err)
-		}
 	}
 
 	return e.parseFilesForIPs(localPath)
@@ -165,16 +132,37 @@ func (e *Extractor) BuildBaseRecords(ips []string) []models.ScannerData {
 
 // cloneOrUpdateRepo clones or updates the configured repository.
 func (e *Extractor) cloneOrUpdateRepo() error {
-	e.logger.Info("Extractor", "Clonage/mise a jour du repository...")
+	repoURL := e.config.RepoURL
+	if repoURL == "" {
+		repoURL = "https://github.com/MDMCK10/internet-scanners"
+	}
+	localPath := e.config.LocalPath
+	if localPath == "" {
+		localPath = "./data/internet-scanners"
+	}
 
-	if _, err := os.Stat(e.config.LocalPath); os.IsNotExist(err) {
-		parentDir := filepath.Dir(e.config.LocalPath)
+	e.logger.Info("Extractor", "Clonage/mise a jour du repository...")
+	e.logger.Info("Extractor", "Repository: "+repoURL)
+	e.logger.Info("Extractor", "Local Path: "+localPath)
+
+	if _, err := os.Stat(localPath); os.IsNotExist(err) {
+		parentDir := filepath.Dir(localPath)
 		if err := os.MkdirAll(parentDir, 0755); err != nil {
 			return fmt.Errorf("cloneOrUpdateRepo: creating parent directory: %w", err)
 		}
-		e.logger.Info("Extractor", "Clonage du repository depuis "+e.config.RepoURL)
+		e.logger.Info("Extractor", "Clonage du repository depuis "+repoURL)
+		cmd := exec.Command("git", "clone", repoURL, localPath)
+		if err := cmd.Run(); err != nil {
+			e.logger.Error("Extractor", "Erreur lors du clonage: "+err.Error())
+			return fmt.Errorf("git clone failed: %w", err)
+		}
 	} else {
 		e.logger.Info("Extractor", "Repository local trouve, mise a jour...")
+		cmd := exec.Command("git", "-C", localPath, "pull")
+		if err := cmd.Run(); err != nil {
+			e.logger.Error("Extractor", "Erreur lors de la mise a jour: "+err.Error())
+			return fmt.Errorf("git pull failed: %w", err)
+		}
 	}
 
 	e.logger.Info("Extractor", "Repository synchronise")

@@ -226,29 +226,15 @@ func (a *App) zipDirectory(srcDir, destZip string) error {
 
 // countUniqueCountriesInResults counts unique countries in search results
 func (a *App) countUniqueCountriesInResults(results []models.ScannerData) int {
-	unique := make(map[string]bool)
-	for _, item := range results {
-		if item.CountryCode != "" {
-			unique[item.CountryCode] = true
-		}
-	}
-	return len(unique)
+	return CountUniqueCountries(results)
 }
 
 // countUniqueScannersInResults counts unique scanners in search results
 func (a *App) countUniqueScannersInResults(results []models.ScannerData) int {
-	unique := make(map[string]bool)
-	for _, item := range results {
-		unique[item.ScannerName] = true
-	}
-	return len(unique)
+	return CountUniqueScanners(results)
 }
 
 // countRiskLevelsInResults counts unique risk levels in search results
 func (a *App) countRiskLevelsInResults(results []models.ScannerData) int {
-	unique := make(map[string]bool)
-	for _, item := range results {
-		unique[item.RiskLevel] = true
-	}
-	return len(unique)
+	return CountRiskLevels(results)
 }

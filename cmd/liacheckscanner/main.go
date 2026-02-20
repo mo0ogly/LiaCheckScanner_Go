@@ -160,57 +160,9 @@ func writeCSVToStdout(data []models.ScannerData) {
 	w := csv.NewWriter(os.Stdout)
 	defer w.Flush()
 
-	headers := []string{
-		"ID", "IP/CIDR", "Scanner Name", "Scanner Type", "Source File",
-		"Country Code", "Country Name", "ISP", "Organization",
-		"RDAP Name", "RDAP Handle", "RDAP CIDR", "RDAP Registry",
-		"Start Address", "End Address", "IP Version", "RDAP Type", "Parent Handle",
-		"Event Registration", "Event Last Changed",
-		"ASN", "AS Name", "Reverse DNS",
-		"Abuse Confidence Score", "Abuse Reports", "Usage Type",
-		"Domain", "Last Seen", "First Seen", "Tags", "Notes",
-		"Risk Level", "Export Date", "Abuse Email", "Tech Email",
-	}
-	_ = w.Write(headers)
+	_ = w.Write(models.CSVHeaders)
 
 	for _, item := range data {
-		row := []string{
-			item.ID,
-			item.IPOrCIDR,
-			item.ScannerName,
-			string(item.ScannerType),
-			item.SourceFile,
-			item.CountryCode,
-			item.CountryName,
-			item.ISP,
-			item.Organization,
-			item.RDAPName,
-			item.RDAPHandle,
-			item.RDAPCIDR,
-			item.Registry,
-			item.StartAddress,
-			item.EndAddress,
-			item.IPVersion,
-			item.RDAPType,
-			item.ParentHandle,
-			item.EventRegistration,
-			item.EventLastChanged,
-			item.ASN,
-			item.ASName,
-			item.ReverseDNS,
-			fmt.Sprintf("%d", item.AbuseConfidenceScore),
-			fmt.Sprintf("%d", item.AbuseReports),
-			item.UsageType,
-			item.Domain,
-			item.LastSeen.Format("2006-01-02 15:04:05"),
-			item.FirstSeen.Format("2006-01-02 15:04:05"),
-			strings.Join(item.Tags, ", "),
-			item.Notes,
-			item.RiskLevel,
-			item.ExportDate.Format("2006-01-02 15:04:05"),
-			item.AbuseEmail,
-			item.TechEmail,
-		}
-		_ = w.Write(row)
+		_ = w.Write(models.ScannerDataToCSVRow(item))
 	}
 }

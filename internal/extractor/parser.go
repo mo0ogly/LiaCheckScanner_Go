@@ -94,15 +94,3 @@ func (e *Extractor) extractIPsFromNFTFile(filePath string, ipv4Regex, ipv6Regex 
 	}
 	return ips, nil
 }
-
-// isTextFile checks whether a file path refers to a text file based on extension.
-func (e *Extractor) isTextFile(filePath string) bool {
-	ext := strings.ToLower(filepath.Ext(filePath))
-	textExtensions := map[string]bool{
-		".txt": true, ".md": true, ".json": true, ".yaml": true, ".yml": true,
-		".xml": true, ".csv": true, ".conf": true, ".cfg": true, ".ini": true,
-		".sh": true, ".py": true, ".js": true, ".html": true, ".css": true,
-	}
-
-	return textExtensions[ext] || ext == ""
-}

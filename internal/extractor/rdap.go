@@ -5,19 +5,106 @@ import (
 	"fmt"
 	"io"
 	"net"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/lia/liacheckscanner_go/internal/models"
 )
 
+// cacheAccessor abstracts cache read/write so the same enrichment logic
+// works for both single-threaded (rdapCache) and concurrent (safeRDAPCache) use.
+type cacheAccessor interface {
+	applyCache(ip string, data *models.ScannerData) bool
+	updateCache(ip string, data *models.ScannerData)
+}
+
 // rdapCache manages simple on-disk cache for RDAP query results.
 type rdapCache struct {
 	Entries map[string]models.RDAPCacheEntry `json:"entries"`
 	Path    string                           `json:"-"`
+}
+
+func (c *rdapCache) applyCache(ip string, data *models.ScannerData) bool {
+	entry, ok := c.Entries[ip]
+	if !ok {
+		return false
+	}
+	data.RDAPName = entry.RDAPName
+	data.RDAPHandle = entry.RDAPHandle
+	data.RDAPCIDR = entry.RDAPCIDR
+	data.Registry = entry.Registry
+	data.StartAddress = entry.StartAddress
+	data.EndAddress = entry.EndAddress
+	data.IPVersion = entry.IPVersion
+	data.RDAPType = entry.RDAPType
+	data.ParentHandle = entry.ParentHandle
+	data.EventRegistration = entry.EventRegistration
+	data.EventLastChanged = entry.EventLastChanged
+	data.ASN = entry.ASN
+	data.ASName = entry.ASName
+	data.ReverseDNS = entry.ReverseDNS
+	data.CountryCode = entry.CountryCode
+	data.CountryName = entry.CountryName
+	data.ISP = entry.ISP
+	data.Organization = entry.Organization
+	data.AbuseEmail = entry.AbuseEmail
+	data.TechEmail = entry.TechEmail
+	return true
+}
+
+func (c *rdapCache) updateCache(ip string, data *models.ScannerData) {
+	c.Entries[ip] = models.RDAPCacheEntry{
+		RDAPName:          data.RDAPName,
+		RDAPHandle:        data.RDAPHandle,
+		RDAPCIDR:          data.RDAPCIDR,
+		Registry:          data.Registry,
+		StartAddress:      data.StartAddress,
+		EndAddress:        data.EndAddress,
+		IPVersion:         data.IPVersion,
+		RDAPType:          data.RDAPType,
+		ParentHandle:      data.ParentHandle,
+		EventRegistration: data.EventRegistration,
+		EventLastChanged:  data.EventLastChanged,
+		ASN:               data.ASN,
+		ASName:            data.ASName,
+		ReverseDNS:        data.ReverseDNS,
+		CountryCode:       data.CountryCode,
+		CountryName:       data.CountryName,
+		ISP:               data.ISP,
+		Organization:      data.Organization,
+		AbuseEmail:        data.AbuseEmail,
+		TechEmail:         data.TechEmail,
+		CachedAt:          time.Now().Format(time.RFC3339),
+	}
+}
+
+// safeRDAPCache wraps rdapCache with a mutex for concurrent access.
+type safeRDAPCache struct {
+	mu    sync.Mutex
+	cache *rdapCache
+}
+
+func newSafeRDAPCache(c *rdapCache) *safeRDAPCache {
+	return &safeRDAPCache{cache: c}
+}
+
+func (sc *safeRDAPCache) applyCache(ip string, data *models.ScannerData) bool {
+	sc.mu.Lock()
+	defer sc.mu.Unlock()
+	return sc.cache.applyCache(ip, data)
+}
+
+func (sc *safeRDAPCache) updateCache(ip string, data *models.ScannerData) {
+	sc.mu.Lock()
+	defer sc.mu.Unlock()
+	sc.cache.updateCache(ip, data)
+}
+
+func (sc *safeRDAPCache) save() {
+	sc.cache.save()
 }
 
 // cacheTTL returns the configured cache TTL as a time.Duration.
@@ -74,111 +161,116 @@ func (c *rdapCache) save() {
 	_ = enc.Encode(c)
 }
 
-func (e *Extractor) applyCache(ip string, data *models.ScannerData, c *rdapCache) bool {
-	entry, ok := c.Entries[ip]
-	if !ok {
-		return false
-	}
-	data.RDAPName = entry.RDAPName
-	data.RDAPHandle = entry.RDAPHandle
-	data.RDAPCIDR = entry.RDAPCIDR
-	data.Registry = entry.Registry
-	data.StartAddress = entry.StartAddress
-	data.EndAddress = entry.EndAddress
-	data.IPVersion = entry.IPVersion
-	data.RDAPType = entry.RDAPType
-	data.ParentHandle = entry.ParentHandle
-	data.EventRegistration = entry.EventRegistration
-	data.EventLastChanged = entry.EventLastChanged
-	data.ASN = entry.ASN
-	data.ASName = entry.ASName
-	data.ReverseDNS = entry.ReverseDNS
-	data.CountryCode = entry.CountryCode
-	data.CountryName = entry.CountryName
-	data.ISP = entry.ISP
-	data.Organization = entry.Organization
-	data.AbuseEmail = entry.AbuseEmail
-	data.TechEmail = entry.TechEmail
-	return true
-}
 
-func (e *Extractor) updateCache(ip string, data *models.ScannerData, c *rdapCache) {
-	c.Entries[ip] = models.RDAPCacheEntry{
-		RDAPName:          data.RDAPName,
-		RDAPHandle:        data.RDAPHandle,
-		RDAPCIDR:          data.RDAPCIDR,
-		Registry:          data.Registry,
-		StartAddress:      data.StartAddress,
-		EndAddress:        data.EndAddress,
-		IPVersion:         data.IPVersion,
-		RDAPType:          data.RDAPType,
-		ParentHandle:      data.ParentHandle,
-		EventRegistration: data.EventRegistration,
-		EventLastChanged:  data.EventLastChanged,
-		ASN:               data.ASN,
-		ASName:            data.ASName,
-		ReverseDNS:        data.ReverseDNS,
-		CountryCode:       data.CountryCode,
-		CountryName:       data.CountryName,
-		ISP:               data.ISP,
-		Organization:      data.Organization,
-		AbuseEmail:        data.AbuseEmail,
-		TechEmail:         data.TechEmail,
-		CachedAt:          time.Now().Format(time.RFC3339),
-	}
+// enrichJob represents a single IP enrichment task for the worker pool.
+type enrichJob struct {
+	index       int
+	ip          string
+	scannerInfo ScannerInfo
 }
 
 // enrichData enriches IP data with scanner metadata and API lookups.
+// When config.Parallelism > 1, it uses a worker pool for concurrent enrichment.
 func (e *Extractor) enrichData(ips []string) ([]models.ScannerData, error) {
 	e.logger.Info("Extractor", "Enrichissement des donnees...")
 
 	ipToScanner := e.mapIPsToScanners(ips)
 
-	var scannerData []models.ScannerData
-	now := time.Now()
+	// Load cache once for the entire enrichment batch.
+	cache := e.loadRDAPCache()
+	safeCache := newSafeRDAPCache(cache)
 
-	for i, ip := range ips {
-		scannerInfo := ipToScanner[ip]
-
-		data := models.ScannerData{
-			ID:          fmt.Sprintf("scanner_%d", i+1),
-			IPOrCIDR:    ip,
-			ScannerName: scannerInfo.Name,
-			ScannerType: scannerInfo.Type,
-			SourceFile:  scannerInfo.SourceFile,
-			LastSeen:    now,
-			FirstSeen:   now,
-			ExportDate:  now,
-			CreatedAt:   now,
-			UpdatedAt:   now,
-			Tags:        []string{"extracted", scannerInfo.Name},
-			RiskLevel:   "unknown",
-		}
-
-		if err := e.enrichWithAPI(&data); err != nil {
-			e.logger.Warning("Extractor", fmt.Sprintf("Erreur lors de l'enrichissement de %s: %v", ip, err))
-		}
-
-		scannerData = append(scannerData, data)
+	workers := e.config.Parallelism
+	if workers <= 0 {
+		workers = 1
 	}
+
+	now := time.Now()
+	scannerData := make([]models.ScannerData, len(ips))
+
+	e.logger.Info("Extractor", fmt.Sprintf("Enrichissement avec %d worker(s) pour %d IPs", workers, len(ips)))
+
+	if workers == 1 {
+		// Sequential path (backward compatible).
+		for i, ip := range ips {
+			scannerInfo := ipToScanner[ip]
+			scannerData[i] = e.buildRecord(i, ip, scannerInfo, now)
+			if err := e.enrichUsingCache(&scannerData[i], safeCache); err != nil {
+				e.logger.Warning("Extractor", fmt.Sprintf("Erreur lors de l'enrichissement de %s: %v", ip, err))
+			}
+		}
+	} else {
+		// Parallel path with worker pool.
+		jobs := make(chan enrichJob, len(ips))
+		var wg sync.WaitGroup
+
+		// Pre-populate the result slice with base records.
+		for i, ip := range ips {
+			scannerInfo := ipToScanner[ip]
+			scannerData[i] = e.buildRecord(i, ip, scannerInfo, now)
+		}
+
+		// Start workers.
+		for w := 0; w < workers; w++ {
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				for job := range jobs {
+					if err := e.enrichUsingCache(&scannerData[job.index], safeCache); err != nil {
+						e.logger.Warning("Extractor", fmt.Sprintf("Erreur lors de l'enrichissement de %s: %v", job.ip, err))
+					}
+				}
+			}()
+		}
+
+		// Send jobs.
+		for i, ip := range ips {
+			jobs <- enrichJob{index: i, ip: ip, scannerInfo: ipToScanner[ip]}
+		}
+		close(jobs)
+
+		wg.Wait()
+	}
+
+	// Persist cache once after processing all IPs.
+	safeCache.save()
 
 	e.logger.Info("Extractor", fmt.Sprintf("%d enregistrements enrichis", len(scannerData)))
 	return scannerData, nil
 }
 
-// enrichWithAPI enriches data with RDAP and public geolocation APIs.
-func (e *Extractor) enrichWithAPI(data *models.ScannerData) error {
-	// Use the rate limiter for throttling instead of a raw sleep.
+// buildRecord creates a base ScannerData record for the given IP.
+func (e *Extractor) buildRecord(i int, ip string, info ScannerInfo, now time.Time) models.ScannerData {
+	return models.ScannerData{
+		ID:          fmt.Sprintf("scanner_%d", i+1),
+		IPOrCIDR:    ip,
+		ScannerName: info.Name,
+		ScannerType: info.Type,
+		SourceFile:  info.SourceFile,
+		LastSeen:    now,
+		FirstSeen:   now,
+		ExportDate:  now,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+		Tags:        []string{"extracted", info.Name},
+		RiskLevel:   "unknown",
+	}
+}
+
+// enrichUsingCache enriches a single ScannerData record via RDAP + geo APIs,
+// using the provided cacheAccessor (either rdapCache or safeRDAPCache).
+func (e *Extractor) enrichUsingCache(data *models.ScannerData, ca cacheAccessor) error {
 	if e.rateLimiter != nil {
 		e.rateLimiter.Wait()
 	}
 
-	cache := e.loadRDAPCache()
-	if e.applyCache(data.IPOrCIDR, data, cache) {
+	if ca.applyCache(data.IPOrCIDR, data) {
 		return nil
 	}
 
-	_ = e.performRDAPFull(data.IPOrCIDR, data)
+	if err := e.performRDAPFull(data.IPOrCIDR, data); err != nil {
+		e.logger.Warning("Extractor", fmt.Sprintf("RDAP lookup failed for %s: %v", data.IPOrCIDR, err))
+	}
 
 	cc, country, isp, asStr, reverse := e.performGeoLookupExtended(data.IPOrCIDR)
 	if cc != "" {
@@ -210,35 +302,46 @@ func (e *Extractor) enrichWithAPI(data *models.ScannerData) error {
 		}
 	}
 
-	e.updateCache(data.IPOrCIDR, data, cache)
-	cache.save()
+	ca.updateCache(data.IPOrCIDR, data)
 	return nil
+}
+
+// enrichWithAPI enriches data with RDAP and public geolocation APIs.
+// It loads and persists the cache per call (use enrichUsingCache for batch operations).
+func (e *Extractor) enrichWithAPI(data *models.ScannerData) error {
+	cache := e.loadRDAPCache()
+	err := e.enrichUsingCache(data, cache)
+	cache.save()
+	return err
 }
 
 // performRDAPFull populates RDAP and contact fields on data from RDAP registries.
 func (e *Extractor) performRDAPFull(ip string, data *models.ScannerData) error {
-	all := map[string]string{
-		"arin":    "https://rdap.arin.net/registry/ip/",
-		"ripe":    "https://rdap.ripe.net/ip/",
-		"apnic":   "https://rdap.apnic.net/ip/",
-		"lacnic":  "https://rdap.lacnic.net/rdap/ip/",
-		"afrinic": "https://rdap.afrinic.net/rdap/ip/",
-	}
 	var endpoints []string
-	if len(e.config.Registries) > 0 {
-		for _, k := range e.config.Registries {
-			if url, ok := all[k]; ok {
-				endpoints = append(endpoints, url)
+	if len(e.rdapEndpoints) > 0 {
+		endpoints = e.rdapEndpoints
+	} else {
+		all := map[string]string{
+			"arin":    "https://rdap.arin.net/registry/ip/",
+			"ripe":    "https://rdap.ripe.net/ip/",
+			"apnic":   "https://rdap.apnic.net/ip/",
+			"lacnic":  "https://rdap.lacnic.net/rdap/ip/",
+			"afrinic": "https://rdap.afrinic.net/rdap/ip/",
+		}
+		if len(e.config.Registries) > 0 {
+			for _, k := range e.config.Registries {
+				if url, ok := all[k]; ok {
+					endpoints = append(endpoints, url)
+				}
 			}
 		}
+		if len(endpoints) == 0 {
+			endpoints = []string{all["arin"], all["ripe"], all["apnic"], all["lacnic"], all["afrinic"]}
+		}
 	}
-	if len(endpoints) == 0 {
-		endpoints = []string{all["arin"], all["ripe"], all["apnic"], all["lacnic"], all["afrinic"]}
-	}
-	client := &http.Client{Timeout: 12 * time.Second}
 	for _, base := range endpoints {
-		url := base + ip
-		resp, err := client.Get(url)
+		rdapURL := base + ip
+		resp, err := e.httpGetWithRetry(rdapURL)
 		if err != nil {
 			continue
 		}
@@ -351,73 +454,18 @@ func (e *Extractor) performRDAPFull(ip string, data *models.ScannerData) error {
 		}
 		return nil
 	}
-	return nil
+	return fmt.Errorf("no RDAP registry responded for %s", ip)
 }
 
-// performRDAPDetail returns a few common RDAP fields (name/handle/cidr/registry).
-func (e *Extractor) performRDAPDetail(ip string) (string, string, string, string) {
-	endpoints := []string{
-		"https://rdap.arin.net/registry/ip/",
-		"https://rdap.ripe.net/ip/",
-		"https://rdap.apnic.net/ip/",
-		"https://rdap.lacnic.net/rdap/ip/",
-		"https://rdap.afrinic.net/rdap/ip/",
-	}
-	client := &http.Client{Timeout: 12 * time.Second}
-	for _, base := range endpoints {
-		url := base + ip
-		resp, err := client.Get(url)
-		if err != nil {
-			continue
-		}
-		body, err := io.ReadAll(resp.Body)
-		resp.Body.Close()
-		if err != nil || resp.StatusCode < 200 || resp.StatusCode >= 300 {
-			continue
-		}
-		var m map[string]interface{}
-		if err := json.Unmarshal(body, &m); err != nil {
-			continue
-		}
-		name := ""
-		handle := ""
-		cidr := ""
-		registry := ""
-		if v, ok := m["name"].(string); ok {
-			name = v
-		}
-		if v, ok := m["handle"].(string); ok {
-			handle = v
-		}
-		if v, ok := m["port43"].(string); ok && registry == "" {
-			registry = v
-		}
-		if v, ok := m["objectClassName"].(string); ok && registry == "" {
-			registry = v
-		}
-		if network, ok := m["network"].(map[string]interface{}); ok {
-			if v, ok := network["cidr0_cidrs"].([]interface{}); ok && len(v) > 0 {
-				if first, ok := v[0].(map[string]interface{}); ok {
-					start, _ := first["v4prefix"].(string)
-					length := fmt.Sprintf("%v", first["length"])
-					if start != "" && length != "<nil>" {
-						cidr = fmt.Sprintf("%s/%s", start, length)
-					}
-				}
-			}
-		}
-		if name != "" || handle != "" || cidr != "" || registry != "" {
-			return name, handle, cidr, registry
-		}
-	}
-	return "", "", "", ""
-}
 
 // performGeoLookupExtended queries ip-api.com for country/ISP/AS/reverse info.
 func (e *Extractor) performGeoLookupExtended(ip string) (string, string, string, string, string) {
-	client := &http.Client{Timeout: 10 * time.Second}
-	url := "http://ip-api.com/json/" + ip + "?fields=status,country,countryCode,isp,as,reverse"
-	resp, err := client.Get(url)
+	base := e.geoBaseURL
+	if base == "" {
+		base = "http://ip-api.com/json/"
+	}
+	geoURL := base + ip + "?fields=status,country,countryCode,isp,as,reverse"
+	resp, err := e.httpGetWithRetry(geoURL)
 	if err != nil {
 		return "", "", "", "", ""
 	}
@@ -443,9 +491,12 @@ func (e *Extractor) performGeoLookupExtended(ip string) (string, string, string,
 
 // GeoLookupContinent returns the continent, continent code, country, and country code for the given IP.
 func (e *Extractor) GeoLookupContinent(ip string) (string, string, string, string, error) {
-	client := &http.Client{Timeout: 10 * time.Second}
-	url := "http://ip-api.com/json/" + ip + "?fields=status,continent,continentCode,country,countryCode"
-	resp, err := client.Get(url)
+	base := e.geoBaseURL
+	if base == "" {
+		base = "http://ip-api.com/json/"
+	}
+	geoURL := base + ip + "?fields=status,continent,continentCode,country,countryCode"
+	resp, err := e.httpGetWithRetry(geoURL)
 	if err != nil {
 		return "", "", "", "", fmt.Errorf("geo lookup request for %s: %w", ip, err)
 	}
@@ -477,12 +528,20 @@ func (e *Extractor) LoadProgressTracker() *models.RDAPProgressTracker {
 
 	file, err := os.Open(progressPath)
 	if err != nil {
+		tracker.ProcessedIPSet = map[string]struct{}{}
 		return tracker
 	}
 	defer file.Close()
 
 	if err := json.NewDecoder(file).Decode(tracker); err != nil {
+		tracker.ProcessedIPSet = map[string]struct{}{}
 		return tracker
+	}
+
+	// Build the set from the slice for O(1) lookups.
+	tracker.ProcessedIPSet = make(map[string]struct{}, len(tracker.ProcessedIPs))
+	for _, ip := range tracker.ProcessedIPs {
+		tracker.ProcessedIPSet[ip] = struct{}{}
 	}
 
 	return tracker
@@ -511,6 +570,12 @@ func (e *Extractor) SaveProgressTracker(tracker *models.RDAPProgressTracker) err
 
 // IsIPProcessed reports whether the given IP has already been processed.
 func (e *Extractor) IsIPProcessed(ip string, tracker *models.RDAPProgressTracker) bool {
+	// Use the set for O(1) lookup if available.
+	if tracker.ProcessedIPSet != nil {
+		_, ok := tracker.ProcessedIPSet[ip]
+		return ok
+	}
+	// Fallback to linear scan for backward compatibility.
 	for _, processed := range tracker.ProcessedIPs {
 		if processed == ip {
 			return true

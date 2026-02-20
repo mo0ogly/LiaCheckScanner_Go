@@ -16,7 +16,6 @@ import (
 	"fyne.io/fyne/v2/widget"
 
 	"github.com/lia/liacheckscanner_go/internal/config"
-	"github.com/lia/liacheckscanner_go/internal/models"
 )
 
 // createSearchTab creates the advanced search tab with professional features
@@ -387,23 +386,7 @@ func (a *App) createLogsTab() fyne.CanvasObject {
 
 // performAdvancedSearch performs advanced search with multiple criteria
 func (a *App) performAdvancedSearch(query, country, scanner, risk string) {
-	var results []models.ScannerData
-
-	for _, item := range a.data {
-		// Apply filters
-		matchesQuery := query == "" ||
-			strings.Contains(strings.ToLower(item.IPOrCIDR), strings.ToLower(query)) ||
-			strings.Contains(strings.ToLower(item.ScannerName), strings.ToLower(query))
-
-		matchesCountry := country == "All Countries" || item.CountryCode == country
-		matchesScanner := scanner == "All Scanners" || item.ScannerName == scanner
-		matchesRisk := risk == "All Risk Levels" || item.RiskLevel == risk
-
-		if matchesQuery && matchesCountry && matchesScanner && matchesRisk {
-			results = append(results, item)
-		}
-	}
-
+	results := FilterAdvancedSearch(a.data, query, country, scanner, risk)
 	a.searchResults = results
 	if a.searchResultsTable != nil {
 		a.searchResultsTable.Refresh()

@@ -158,9 +158,6 @@ func BenchmarkGetRiskLevel(b *testing.B) {
 
 // BenchmarkApplyCache benchmarks cache-hit performance.
 func BenchmarkApplyCache(b *testing.B) {
-	dir := b.TempDir()
-	ext := newBenchExtractor(b, dir)
-
 	// Pre-populate a cache with 1000 entries.
 	cache := &rdapCache{
 		Entries: make(map[string]models.RDAPCacheEntry, 1000),
@@ -187,7 +184,7 @@ func BenchmarkApplyCache(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		ip := fmt.Sprintf("%d.%d.%d.%d", (i%1000/16777216)%256, (i%1000/65536)%256, (i%1000/256)%256, i%1000%256)
-		ext.applyCache(ip, data, cache)
+		cache.applyCache(ip, data)
 	}
 }
 
