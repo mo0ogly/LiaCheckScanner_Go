@@ -43,7 +43,7 @@ jobs:
       run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
 
     - name: Upload coverage reports
-      uses: codecov/codecov-action@e28ff129e5465c2c0dcc6f003fc735cb6ae0c673
+      uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de
       with:
         file: ./coverage.out
         flags: unittests
